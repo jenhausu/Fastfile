@@ -6,7 +6,7 @@ default_platform(:ios)
 desc "Build the project."
 lane :build do
     match
-    install_dependencies
+    install_library
 	xcodebuild(
     	scheme: ENV["SCHEME_DEV"]
 	)
@@ -115,7 +115,7 @@ lane :screenshots do |options|
         app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
         type: "development"
     )
-    install_dependencies
+    install_library
     snapshot(
         devices: options[:devices],
         output_directory: ENV["SNAPSHOT_PATH"],
@@ -195,7 +195,7 @@ private_lane :have_new_feature do
     new_faeture != "" ? true : false
 end
 
-def install_dependencies
+def install_library
     carthage(
         platform: "iOS",
         cache_builds: true
@@ -205,7 +205,7 @@ end
 
 def archive(buildType)
     match(readonly: true)
-    install_dependencies
+    install_library
     build_app(
         scheme: buildType,
         export_method: "app-store"
