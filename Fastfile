@@ -69,8 +69,7 @@ lane :bump_build_number do |options|
     if is_ci
         push_to_git_remote(
             remote: "origin",
-            local_branch: "HEAD",
-            remote_branch: git_branch
+            local_branch: "HEAD"
         )
     end
 end
