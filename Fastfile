@@ -216,7 +216,7 @@ def upload_api
 
     lane = ENV["FASTLANE_LANE_NAME"]
     if lane == "release"
-        sh("#{changelog} > ./fastlane/metadata/zh-Hant/release_note.txt")
+        sh("#{changelog} > ./fastlane/metadata/zh-Hant/release_notes.txt")
 
         upload_to_app_store(
             reject_if_possible: true, # Rejects the previously submitted build if it's in a state where it's possible
