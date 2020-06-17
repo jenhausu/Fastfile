@@ -69,8 +69,7 @@ lane :bump_build_number do |options|
     if is_ci
         push_to_git_remote(
             remote: "origin",
-            local_branch: "HEAD",
-            remote_branch: git_branch
+            local_branch: "HEAD"
         )
     end
 end
@@ -217,7 +216,7 @@ def upload_api
 
     lane = ENV["FASTLANE_LANE_NAME"]
     if lane == "release"
-        sh("#{changelog} > ./fastlane/metadata/zh-Hant/release_note.txt")
+        sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_notes.txt")
 
         upload_to_app_store(
             reject_if_possible: true, # Rejects the previously submitted build if it's in a state where it's possible
@@ -261,6 +260,16 @@ def changelog_update
             updated_section_identifier: "Build #{get_build_number}"
         )
     end
+
+    commit = last_git_commit
+    if commit[:message].split.first == "version[daily]:"
+        sh("git", "add", "../CHANGELOG.md")
+        sh("git commit --amend --no-edit -m \"#{commit[:message]}\"")
+        push_to_git_remote(
+            remote: "origin",
+            local_branch: "HEAD"
+        )
+    end
 end
 
 lane :changlog_from_git do |options|
@@ -271,11 +280,6 @@ lane :changlog_from_git do |options|
     end
 
     sh("git log --merges --pretty=format:\"%s%n%b%n\" #{last_archive_commit}...")
-end
-
-desc "Test fastlane script."
-lane :test do
-    slack_message("check synax correct", true)
 end
 
 error do |lane, exception, options|
