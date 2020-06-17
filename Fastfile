@@ -272,11 +272,6 @@ lane :changlog_from_git do |options|
     sh("git log --merges --pretty=format:\"%s%n%b%n\" #{last_archive_commit}...")
 end
 
-desc "Test fastlane script."
-lane :test do
-    slack_message("check synax correct", true)
-end
-
 error do |lane, exception, options|
     slack_message("Something Wrong! \n#{exception.error_info}", false)
 end
