@@ -258,7 +258,7 @@ def changelog_update
 
     commit = last_git_commit
     if commit[:message].split.first == "version[daily]:"
-        sh("git", "add", "../CHANGELOG.md")
+        git_add(path: "#{ENV["CHANGELOG_PATH"]}")
         sh("git commit --amend --no-edit -m \"#{commit[:message]}\"")
         git_push
     end
