@@ -260,6 +260,16 @@ def changelog_update
             updated_section_identifier: "Build #{get_build_number}"
         )
     end
+
+    commit = last_git_commit
+    if commit[:message].split.first == "version[daily]:"
+        sh("git", "add", "../CHANGELOG.md")
+        sh("git commit --amend --no-edit -m \"#{commit[:message]}\"")
+        push_to_git_remote(
+            remote: "origin",
+            local_branch: "HEAD"
+        )
+    end
 end
 
 lane :changlog_from_git do |options|
