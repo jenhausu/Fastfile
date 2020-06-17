@@ -66,12 +66,7 @@ lane :bump_build_number do |options|
         xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
     )
 
-    if is_ci
-        push_to_git_remote(
-            remote: "origin",
-            local_branch: "HEAD"
-        )
-    end
+    git_push
 end
 
 desc "Push a new alpha build to TestFlight"
@@ -265,9 +260,16 @@ def changelog_update
     if commit[:message].split.first == "version[daily]:"
         sh("git", "add", "../CHANGELOG.md")
         sh("git commit --amend --no-edit -m \"#{commit[:message]}\"")
+        git_push
+    end
+end
+
+def git_push
+    if is_ci
         push_to_git_remote(
             remote: "origin",
-            local_branch: "HEAD"
+            local_branch: git_branch,
+            remote_branch: git_branch
         )
     end
 end
