@@ -14,6 +14,7 @@ end
 
 desc "Run unit test."
 lane :unit_test do |options|
+    install_library
     scan(
         scheme: ENV["SCHEME_DEV"],
         device: "iPhone 8",
