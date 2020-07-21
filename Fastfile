@@ -179,6 +179,14 @@ lane :bump_version do |options|
     )
 end
 
+lane :install_library do
+    carthage(
+        platform: "iOS",
+        cache_builds: true
+    )
+    cocoapods
+end
+
 private_lane :have_new_commit do
     log = sh(command: "git log --oneline -1 --format=%B | head -1")
     log.split.first != "version[daily]:" ? true : false
@@ -188,14 +196,6 @@ private_lane :have_new_feature do
     last_archive_commit = sh('git log -1 --grep "version\[daily\]:" --format=%h | tr -d "\n"')
     new_faeture = sh("git log --oneline --grep 'feat:' --grep 'fix:' #{last_archive_commit}...")
     new_faeture != "" ? true : false
-end
-
-def install_library
-    carthage(
-        platform: "iOS",
-        cache_builds: true
-    )
-    cocoapods
 end
 
 def archive(buildType)
