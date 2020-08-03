@@ -291,10 +291,6 @@ error do |lane, exception, options|
 end
 
 def slack_message(message, success)
-    if ENV["BUILD_BY"] == "Bitrise" then
-        return
-    end
-
     commit = last_git_commit
 
     slack_webhook_url = is_ci ? "https://hooks.slack.com/services/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" : "https://hooks.slack.com/services/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"
