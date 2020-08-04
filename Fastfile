@@ -296,7 +296,7 @@ end
 def slack_message(message, success)
     commit = last_git_commit
 
-    slack_webhook_url = is_ci ? "https://hooks.slack.com/services/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" : "https://hooks.slack.com/services/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"
+    slack_webhook_url = is_ci ? ENV["SLACK_WEBHOOK_URL"] : ENV["SLACK_TEST_WEBHOOK_URL"]
 
     slack(
         message: message,
