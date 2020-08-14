@@ -25,8 +25,8 @@ end
 desc "Bump build number."
 lane :bump_build_number do |options|
     if is_ci then
-        sh(command: "git config --global user.name Bitrise")
-        sh(command: "git config --global user.email jenhausu@osensetech.com")
+        sh(command: "git config --global user.name #{ENV["CI_NAME"]}")
+        sh(command: "git config --global user.email #{ENV["DEVELOPER_EMAIL"]}")
     end
 
     if options[:force]
@@ -303,7 +303,7 @@ def slack_message(message, success)
         success: success,
         payload: {
             "lane" => ENV["FASTLANE_LANE_NAME"],
-            "Built by" => ENV["BUILD_BY"] || "Anonymous",
+            "Built by" => ENV["CI_NAME"] || "Anonymous",
             "Commit Message" => commit[:message],
             "Commit Hash" => commit[:abbreviated_commit_hash]
         },
