@@ -229,7 +229,8 @@ def upload_api
         testflight(
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
             changelog: changelog,
-            distribute_external: true
+            distribute_external: ENV["FASTLANE_LANE_NAME"] == "beta",
+            groups: ENV["EXTERNAL_GROUPS"]
         )
     end
 end
