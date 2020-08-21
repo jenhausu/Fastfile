@@ -228,7 +228,8 @@ def upload_api
     else
         testflight(
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
-            changelog: changelog
+            changelog: changelog,
+            distribute_external: true
         )
     end
 end
