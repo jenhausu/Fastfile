@@ -300,7 +300,7 @@ def slack_message(message, success)
     slack_webhook_url = is_ci ? ENV["SLACK_WEBHOOK_URL"] : ENV["SLACK_TEST_WEBHOOK_URL"]
 
     slack(
-        message: message,
+        pretext: message,
         success: success,
         payload: {
             "lane" => ENV["FASTLANE_LANE_NAME"],
