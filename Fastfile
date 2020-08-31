@@ -220,7 +220,6 @@ def upload_api
             },
             reject_if_possible: true, # Rejects the previously submitted build if it's in a state where it's possible
             submit_for_review: true,
-            automatic_release: true,
             phased_release: true,
             skip_screenshots: true,
             force: is_ci
