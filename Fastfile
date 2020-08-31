@@ -303,10 +303,10 @@ def slack_message(message, success)
         pretext: message,
         success: success,
         payload: {
-            "lane" => ENV["FASTLANE_LANE_NAME"],
-            "Built by" => ENV["CI_NAME"] || "Anonymous",
+            "Lane" => ENV["FASTLANE_LANE_NAME"],
             "Commit Message" => commit[:message],
-            "Commit Hash" => commit[:abbreviated_commit_hash]
+            "Commit Hash" => commit[:abbreviated_commit_hash],
+            "Built by" => ENV["CI_NAME"] || "Anonymous"
         },
         default_payloads: [:git_branch, :git_author],
         slack_url: slack_webhook_url
