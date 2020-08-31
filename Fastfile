@@ -198,11 +198,11 @@ private_lane :have_new_feature do
     new_faeture != "" ? true : false
 end
 
-def archive(buildType)
+def archive(scheme)
     match(readonly: true)
     install_library
     build_app(
-        scheme: buildType,
+        scheme: scheme,
         export_method: "app-store"
     )
 end
