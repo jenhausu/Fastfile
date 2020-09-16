@@ -222,7 +222,7 @@ def upload_api
             submit_for_review: true,
             phased_release: true,
             skip_screenshots: true,
-            force: is_ci
+            force: is_ci  # Skip the HTML report file verification
         )
     else
         testflight(
