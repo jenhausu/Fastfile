@@ -16,7 +16,7 @@ desc "Run unit test."
 lane :unit_test do |options|
     install_library
     scan(
-        scheme: ENV["SCHEME_DEV"],
+        scheme: ENV["SCHEME_TEST"],
         device: "iPhone 8",
         test_without_building: options[:without_build]
     )
