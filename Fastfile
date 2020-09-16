@@ -174,7 +174,7 @@ lane :bump_version do |options|
         build_number: "0"
     )
     commit_version_bump(
-        message: "version[release]: #{get_version_number}",
+        message: "version[#{type}]: #{get_version_number}",
         xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
     )
 end
