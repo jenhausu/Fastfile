@@ -280,16 +280,6 @@ def git_push(force)
     end
 end
 
-lane :changlog_from_git do |options|
-    if options[:version] == "release"
-        last_archive_commit = sh('git log -1 --grep "version\[release\]:" --format=%h | tr -d "\n"')
-    else
-        last_archive_commit = sh('git log -2 --grep "version\[daily\]:" --format=%h | tail -1 | tr -d "\n"')
-    end
-
-    sh("git log --merges --pretty=format:\"%s%n%b%n\" #{last_archive_commit}...")
-end
-
 error do |lane, exception, options|
     slack_message("Something Wrong! \n#{exception.error_info}", false)
 end
