@@ -180,10 +180,11 @@ lane :bump_version do |options|
 end
 
 lane :install_library do
-    carthage(
-        platform: "iOS",
-        cache_builds: true
-    )
+    # carthage(
+    #     platform: "iOS",
+    #     cache_builds: true
+    # )
+    sh("./carthage.sh bootstrap --platform ios --cache-builds")
     cocoapods
 end
 
