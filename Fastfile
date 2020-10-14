@@ -208,7 +208,7 @@ def archive(scheme)
     )
 end
 
-def upload_api
+lane :upload_api do |options|
     changelog = get_changelog
 
     lane = ENV["FASTLANE_LANE_NAME"]
@@ -229,8 +229,8 @@ def upload_api
         testflight(
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
             changelog: changelog,
-            distribute_external: ENV["FASTLANE_LANE_NAME"] == "beta",
-            groups: ENV["EXTERNAL_GROUPS"]
+            distribute_external: options[:distribute_external],
+            groups: options[:external_groups]
         )
     end
 end
