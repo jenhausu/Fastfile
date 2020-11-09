@@ -10,6 +10,7 @@ lane :build do
 	xcodebuild(
     	scheme: ENV["SCHEME_DEV"]
 	)
+    slack_message("Build Successfully", true)
 end
 
 desc "Run unit test."
@@ -20,6 +21,7 @@ lane :unit_test do |options|
         device: "iPhone 8",
         test_without_building: options[:without_build]
     )
+    slack_message("Unit Test Success", true)
 end
 
 desc "Bump build number."
