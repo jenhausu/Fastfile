@@ -241,7 +241,7 @@ def get_changelog
     if ENV["FASTLANE_LANE_NAME"] == "release"
         read_changelog(
             changelog_path: ENV["CHANGELOG_PATH"],
-            section_identifier: "[Unreleased]"
+            section_identifier: "[New Release]"
         )
     else
         read_changelog(
@@ -254,7 +254,7 @@ end
 def changelog_update
     if ENV["FASTLANE_LANE_NAME"] == "release"
         update_changelog(
-            section_identifier: "[Unreleased]",
+            section_identifier: "[New Release]",
             updated_section_identifier: "Release #{get_version_number}"
         )
     else
