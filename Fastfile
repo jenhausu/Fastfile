@@ -288,6 +288,11 @@ error do |lane, exception, options|
     slack_message("Something Wrong! \n#{exception.error_info}", false)
 end
 
+desc "Send notification messaage."
+lane :send_notification do |options|
+    slack_message(options[:message], options[:success])
+end
+
 def slack_message(message, success)
     commit = last_git_commit
 
