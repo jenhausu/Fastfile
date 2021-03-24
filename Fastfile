@@ -191,6 +191,30 @@ lane :install_dependency do
     cocoapods
 end
 
+lane :update_dependency do
+    update_bundle
+    update_cocoapods
+    update_carthage
+end
+
+def update_bundle
+    sh(command: "bundle update")
+    sh("git add .")
+    sh("git commit -m 'bundle update'")
+end
+
+def update_cocoapods
+    sh(command: "bundle exec pod update")
+    sh("git add .")
+    sh("git commit -m 'cocoapods update'")
+end
+
+def update_carthage
+    sh(command: "../carthage.sh update --platform ios")
+    sh("git add .")
+    sh("git commit -m 'carthage update'")
+end
+
 private_lane :have_new_commit do
     log = sh(command: "git log --oneline -1 --format=%B | head -1")
     log.split.first != "version[daily]:" ? true : false
