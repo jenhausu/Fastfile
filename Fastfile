@@ -182,7 +182,7 @@ lane :bump_version do |options|
     )
 end
 
-lane :install_library do
+lane :install_dependency do
 #	 carthage(
 #	 	 platform: "iOS",
 #		 cache_builds: true
@@ -204,7 +204,7 @@ end
 
 def archive(scheme)
     match(readonly: true)
-    install_library
+    install_dependency
     build_app(
         scheme: scheme,
         export_method: "app-store"
