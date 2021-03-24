@@ -201,19 +201,19 @@ end
 def update_bundle
     sh("bundle update")
     sh("bundle exec fastlane update_plugins")
-    sh("git add .")
+    git_add(path: "./Gemfile.lock")
     sh("git commit -m 'bundle update'")
 end
 
 def update_cocoapods
     sh(command: "bundle exec pod update")
-    sh("git add .")
+    git_add(path: "./Podfile.lock")
     sh("git commit -m 'cocoapods update'")
 end
 
 def update_carthage
     sh(command: "../carthage.sh update --platform ios")
-    sh("git add .")
+    git_add(path: "./Cartfile.resolved")
     sh("git commit -m 'carthage update'")
 end
 
