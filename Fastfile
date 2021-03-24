@@ -5,7 +5,7 @@ default_platform(:ios)
 
 desc "Build the project."
 lane :build do
-    match
+    match(readonly: true)
     install_library
 	xcodebuild(
     	scheme: ENV["SCHEME_DEV"]
@@ -110,7 +110,8 @@ desc "Take screenshots and upload."
 lane :screenshots do |options|
     match(
         app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
-        type: "development"
+        type: "development",
+        readonly: true
     )
     install_library
     snapshot(
