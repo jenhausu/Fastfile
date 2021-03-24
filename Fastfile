@@ -199,7 +199,8 @@ lane :update_dependency do
 end
 
 def update_bundle
-    sh(command: "bundle update")
+    sh("bundle update")
+    sh("bundle exec fastlane update_plugins")
     sh("git add .")
     sh("git commit -m 'bundle update'")
 end
