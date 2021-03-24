@@ -196,6 +196,7 @@ lane :update_dependency do
     update_bundle
     update_cocoapods
     update_carthage
+    git_push
 end
 
 def update_bundle
