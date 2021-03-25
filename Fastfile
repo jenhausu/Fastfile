@@ -34,7 +34,7 @@ lane :bump_build_number do |options|
     if options[:force]
 
     else
-        if have_new_commit == false
+        if have_new_feature == false
             next
         end
     end
@@ -218,13 +218,8 @@ def update_carthage
     sh("git commit -m 'carthage update'")
 end
 
-private_lane :have_new_commit do
-    log = sh(command: "git log --oneline -1 --format=%B | head -1")
-    log.split.first != "version[daily]:" ? true : false
-end
-
 private_lane :have_new_feature do
-    last_archive_commit = sh('git log -1 --grep "version\[daily\]:" --format=%h | tr -d "\n"')
+    last_archive_commit_hash = sh('git log -1 --grep "version\[daily\]:" --format=%h | tr -d "\n"')
     new_faeture = sh("git log --oneline --grep 'feat:' --grep 'fix:' #{last_archive_commit}...")
     new_faeture != "" ? true : false
 end
