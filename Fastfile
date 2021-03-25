@@ -287,10 +287,13 @@ def changelog_update
         )
     end
 
-    commit = last_git_commit
-    git_add(path: ENV["CHANGELOG_PATH"])
-    sh("git commit -m 'changelog: update'")
-    git_push(true)
+    begin
+        sh("git diff --quiet")
+    rescue
+        git_add(path: ENV["CHANGELOG_PATH"])
+        sh("git commit -m 'changelog: update'")
+        git_push(true)
+    end
 end
 
 def git_push(force)
