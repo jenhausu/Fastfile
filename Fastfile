@@ -39,7 +39,7 @@ lane :bump_build_number do |options|
         end
     end
 
-    version = get_version_number
+    version = get_version_number(target: ENV["TARGET_NAME"])
     build_number = get_build_number.to_i
 
     testflight_build_number = latest_testflight_build_number(
@@ -167,7 +167,7 @@ lane :bump_version do |options|
 
     if options[:tag]
         add_git_tag(
-            tag: "#{get_version_number}"
+            tag: "#{get_version_number(target: ENV["TARGET_NAME"])}"
         )
     end
 
@@ -178,7 +178,7 @@ lane :bump_version do |options|
         build_number: "0"
     )
     commit_version_bump(
-        message: "version[#{type}]: #{get_version_number}",
+        message: "version[#{type}]: #{(get_version_number(target: ENV["TARGET_NAME"]))}",
         xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
     )
 end
@@ -283,7 +283,7 @@ def changelog_update
     if ENV["FASTLANE_LANE_NAME"] == "release"
         update_changelog(
             section_identifier: "[New Release]",
-            updated_section_identifier: "Release #{get_version_number}"
+            updated_section_identifier: "Release #{get_version_number(target: ENV["TARGET_NAME"])}"
         )
     else
         update_changelog(
