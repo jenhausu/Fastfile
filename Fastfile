@@ -42,8 +42,12 @@ lane :bump_build_number do |options|
     version = get_version_number(target: ENV["TARGET_NAME"])
     build_number = get_build_number.to_i
 
+    app_identifier_alpha = ENV["BUNDLE_ID_ALPHA"]
+    if app_identifier_alpha == nil
+        app_identifier_alpha = "#{ENV["BUNDLE_ID"]}.alpha"
+    end
     testflight_build_number = latest_testflight_build_number(
-        app_identifier: "#{ENV["BUNDLE_ID"]}.alpha",
+        app_identifier: app_identifier_alpha,
         version: version,
         initial_build_number: 0
     )
