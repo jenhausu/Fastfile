@@ -210,20 +210,29 @@ end
 def update_bundle
     sh("bundle update")
     sh("bundle exec fastlane update_plugins")
-    git_add(path: "./Gemfile.lock")
-    sh("git commit -m 'bundle update'")
+    diff = sh("git diff")
+    if diff != ""
+        git_add(path: "./Gemfile.lock")
+        sh("git commit -m 'lib[bundle]: update'")
+    end
 end
 
 def update_cocoapods
     sh(command: "bundle exec pod update")
-    git_add(path: "./Podfile.lock")
-    sh("git commit -m 'cocoapods update'")
+    diff = sh("git diff")
+    if diff != ""
+        git_add(path: "./Podfile.lock")
+        sh("git commit -m 'lib[cocoapods]: update'")
+    end
 end
 
 def update_carthage
     sh(command: "../carthage.sh update --platform ios")
-    git_add(path: "./Cartfile.resolved")
-    sh("git commit -m 'carthage update'")
+    diff = sh("git diff")
+    if diff != ""
+        git_add(path: "./Cartfile.resolved")
+        sh("git commit -m 'lib[carthage]; update'")
+    end
 end
 
 private_lane :have_new_feature do
@@ -296,9 +305,8 @@ def changelog_update
         )
     end
 
-    begin
-        sh("git diff --quiet")
-    rescue
+    diff = sh("git diff")
+    if diff != ""
         git_add(path: ENV["CHANGELOG_PATH"])
         sh("git commit -m 'changelog: update'")
         git_push(true)
