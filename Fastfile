@@ -1,15 +1,18 @@
-
 require "tty-prompt"
 
 default_platform(:ios)
 
+ENV["SOURCE_PACKAGES_PATH"] = "Packages"
+
 desc "Build the project."
 lane :build do
     match(readonly: true)
-    install_library
-	xcodebuild(
-    	scheme: ENV["SCHEME_DEV"]
-	)
+    install_dependency
+    gym(
+        scheme: ENV["SCHEME_DEV"],
+        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"],
+        skip_archive: true
+    )
     slack_message("Build Successfully", true)
 end
 
@@ -19,7 +22,8 @@ lane :unit_test do |options|
     scan(
         scheme: ENV["SCHEME_TEST"],
         device: "iPhone 8",
-        test_without_building: options[:without_build]
+        test_without_building: options[:without_build],
+        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
     )
     slack_message("Unit Test Success", true)
 end
@@ -233,9 +237,10 @@ end
 def archive(scheme)
     match(readonly: true)
     install_dependency
-    build_app(
+    gym(
         scheme: scheme,
-        export_method: "app-store"
+        export_method: "app-store",
+        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
     )
 end
 
