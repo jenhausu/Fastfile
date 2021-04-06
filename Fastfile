@@ -10,7 +10,6 @@ lane :build do
     install_dependency
     gym(
         scheme: ENV["SCHEME_DEV"],
-        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"],
         skip_archive: true
     )
     slack_message("Build Successfully", true)
