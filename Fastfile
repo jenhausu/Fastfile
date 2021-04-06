@@ -231,7 +231,7 @@ def update_carthage
     diff = sh("git diff")
     if diff != ""
         git_add(path: "./Cartfile.resolved")
-        sh("git commit -m 'lib[carthage]; update'")
+        sh("git commit -m 'lib[carthage]: update'")
     end
 end
 
