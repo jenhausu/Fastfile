@@ -93,7 +93,7 @@ lane :daily_archive do
         bump_build_number
         alpha
     else
-        slack_message("Skip daily archive to TestFlight.", true)
+        slack_message("Skip daily archive.", true)
     end
 end
 
