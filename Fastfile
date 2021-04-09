@@ -267,7 +267,7 @@ lane :upload_api do |options|
             submit_for_review: true,
             phased_release: true,
             skip_screenshots: true,
-            force: is_ci  # Skip the HTML report file verification
+            force: true  # Skip the HTML report file verification
         )
     else
         testflight(
