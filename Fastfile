@@ -275,6 +275,8 @@ lane :upload_api do |options|
             skip_screenshots: true,
             force: true  # Skip the HTML report file verification
         )
+
+        sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
         testflight(
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
