@@ -4,6 +4,12 @@ default_platform(:ios)
 
 ENV["SOURCE_PACKAGES_PATH"] = "Packages"
 
+before_all do |lane, options|
+    if options[:fake_lane] != ""
+        ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
+    end
+end
+
 desc "Build the project."
 lane :build do
     match(readonly: true)
