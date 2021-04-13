@@ -5,7 +5,7 @@ default_platform(:ios)
 ENV["SOURCE_PACKAGES_PATH"] = "Packages"
 
 before_all do |lane, options|
-    if options[:fake_lane] != ""
+    if options[:fake_lane] != nil
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
     end
 end
