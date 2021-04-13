@@ -203,7 +203,7 @@ lane :install_dependency do
 #    )
 	sh(command: "../carthage.sh bootstrap --platform ios --cache-builds")
     cocoapods(
-        repo_update: true
+        repo_update: is_ci
     )
 end
 
