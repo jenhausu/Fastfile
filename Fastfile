@@ -317,7 +317,7 @@ def changelog_update
     diff = sh("git diff")
     if diff != ""
         git_add(path: ENV["CHANGELOG_PATH"])
-        sh("git commit -m 'changelog: update'")
+        sh("git commit -m 'docs[changelog]: update'")
         git_push(true)
     end
 end
