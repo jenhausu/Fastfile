@@ -171,11 +171,35 @@ end
 
 desc "Bump version with interactive command line mode."
 lane :bump_version do |options|
-    prompt = TTY::Prompt.new
-    type = prompt.select("Which type of version to bump?", cycle: true) do |menu|
-          menu.choice 'major'
-          menu.choice 'minor'
-          menu.choice 'patch'
+    if options[:version]
+        increment_version_number(
+            version_number: options[:version]
+        )
+        increment_build_number(
+            build_number: "0"
+        )
+        commit_version_bump(
+            message: "version: #{(get_version_number(target: ENV["TARGET_NAME"]))}",
+            xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
+        )
+    else
+        prompt = TTY::Prompt.new
+        type = prompt.select("Which type of version to bump?", cycle: true) do |menu|
+              menu.choice 'major'
+              menu.choice 'minor'
+              menu.choice 'patch'
+        end
+
+        increment_version_number(
+            bump_type: type
+        )
+        increment_build_number(
+            build_number: "0"
+        )
+        commit_version_bump(
+            message: "version[#{type}]: #{(get_version_number(target: ENV["TARGET_NAME"]))}",
+            xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
+        )
     end
 
     if options[:tag]
@@ -183,17 +207,6 @@ lane :bump_version do |options|
             tag: "#{get_version_number(target: ENV["TARGET_NAME"])}"
         )
     end
-
-    increment_version_number(
-        bump_type: type
-    )
-    increment_build_number(
-        build_number: "0"
-    )
-    commit_version_bump(
-        message: "version[#{type}]: #{(get_version_number(target: ENV["TARGET_NAME"]))}",
-        xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
-    )
 end
 
 lane :install_dependency do
