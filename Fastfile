@@ -72,7 +72,7 @@ lane :bump_build_number do |options|
             build_number = appstore_build_number
         end
     end
-    
+
     if options[:number] == nil
         build_number = build_number + 1
     else
@@ -101,7 +101,6 @@ end
 desc "Daily Archive"
 lane :daily_archive do
     if have_new_feature
-        bump_build_number
         alpha
     else
         slack_message("Skip daily archive.", true)
@@ -267,6 +266,7 @@ private_lane :have_new_feature do
 end
 
 def archive(scheme)
+    bump_build_number
     match(readonly: true)
     install_dependency
     gym(
