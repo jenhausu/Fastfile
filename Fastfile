@@ -40,42 +40,47 @@ lane :bump_build_number do |options|
         sh(command: "git config --global user.email #{ENV["DEVELOPER_EMAIL"]}")
     end
 
-    if options[:force]
+    build_number = get_build_number.to_i
 
-    else
+    if options[:force] != true
         if have_new_feature == false
             next
         end
-    end
 
-    version = get_version_number(target: ENV["TARGET_NAME"])
-    build_number = get_build_number.to_i
+        version = get_version_number(target: ENV["TARGET_NAME"])
 
-    app_identifier_alpha = ENV["BUNDLE_ID_ALPHA"]
-    if app_identifier_alpha == nil
-        app_identifier_alpha = "#{ENV["BUNDLE_ID"]}.alpha"
-    end
-    testflight_build_number = latest_testflight_build_number(
-        app_identifier: app_identifier_alpha,
-        version: version,
-        initial_build_number: 0
-    )
-    if testflight_build_number > build_number then
-        build_number = testflight_build_number.to_i
-    end
+        app_identifier_alpha = ENV["BUNDLE_ID_ALPHA"]
+        if app_identifier_alpha == nil
+            app_identifier_alpha = "#{ENV["BUNDLE_ID"]}.alpha"
+        end
+        testflight_build_number = latest_testflight_build_number(
+            app_identifier: app_identifier_alpha,
+            version: version,
+            initial_build_number: 0
+        )
+        if testflight_build_number > build_number then
+            build_number = testflight_build_number.to_i
+        end
 
-    appstore_build_number = app_store_build_number(
-        live: false,
-        version: version,
-        app_identifier: ENV["BUNDLE_ID"],
-        initial_build_number: 0
-    )
-    if appstore_build_number > build_number then
-        build_number = appstore_build_number
+        appstore_build_number = app_store_build_number(
+            live: false,
+            version: version,
+            app_identifier: ENV["BUNDLE_ID"],
+            initial_build_number: 0
+        )
+        if appstore_build_number > build_number then
+            build_number = appstore_build_number
+        end
+    end
+    
+    if options[:number] == nil
+        build_number = build_number + 1
+    else
+        build_number = options[:number]
     end
 
     increment_build_number({
-        build_number: build_number + 1
+        build_number: build_number
     })
     commit_version_bump(
         message: "version[daily]: #{get_build_number}",
