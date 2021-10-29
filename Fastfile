@@ -272,7 +272,8 @@ def archive(scheme)
     gym(
         scheme: scheme,
         export_method: "app-store",
-        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
+        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"],
+        silent: true
     )
 end
 
