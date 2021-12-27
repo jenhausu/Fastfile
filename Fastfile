@@ -214,11 +214,11 @@ lane :bump_version do |options|
 end
 
 lane :install_dependency do
-#	 carthage(
-#	 	 platform: "iOS",
-#		 cache_builds: true
-#    )
-	sh(command: "../carthage.sh bootstrap --platform ios --cache-builds")
+	carthage(
+	 	platform: "iOS",
+		use_xcframeworks: true,
+		cache_builds: true
+    )
     cocoapods(
         repo_update: is_ci
     )
@@ -251,7 +251,12 @@ def update_cocoapods
 end
 
 def update_carthage
-    sh(command: "../carthage.sh update --platform ios")
+    carthage(
+        command: "update",
+	 	platform: "iOS",
+		use_xcframeworks: true,
+		cache_builds: true
+    )
     diff = sh("git diff")
     if diff != ""
         git_add(path: "./Cartfile.resolved")
