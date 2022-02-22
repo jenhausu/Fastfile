@@ -83,7 +83,7 @@ lane :bump_build_number do |options|
         build_number: build_number
     })
     commit_version_bump(
-        message: "version[daily]: #{get_build_number}",
+        message: "version[build]: #{get_build_number}",
         xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
     )
 
