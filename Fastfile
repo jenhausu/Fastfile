@@ -374,13 +374,14 @@ def slack_message(message, success)
     slack(
         pretext: message,
         success: success,
-        payload: {
-            "Lane" => ENV["FASTLANE_LANE_NAME"],
-            "Commit Message" => commit[:message],
-            "Commit Hash" => commit[:abbreviated_commit_hash],
-            "Built by" => ENV["CI_NAME"] || "Anonymous"
+        attachment_properties: {
+            fields: [
+              {
+                title: "Built by",
+                value: ENV["CI_NAME"] || sh(command: "git config user.name")
+              }
+          ]
         },
-        default_payloads: [:git_branch, :git_author],
         slack_url: slack_webhook_url
     )
 end
