@@ -214,14 +214,19 @@ lane :bump_version do |options|
 end
 
 lane :install_dependency do
-	carthage(
-	 	platform: "iOS",
-		use_xcframeworks: true,
-		cache_builds: true
-    )
-    cocoapods(
-        repo_update: is_ci
-    )
+    if File.file?("Cartfile")
+        carthage(
+            platform: "iOS",
+            use_xcframeworks: true,
+            cache_builds: true
+        )
+    end
+
+    if File.file?("Podfile")
+        cocoapods(
+            repo_update: is_ci
+        )
+    end
 end
 
 lane :update_dependency do
