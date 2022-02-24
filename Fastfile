@@ -42,13 +42,11 @@ lane :bump_build_number do |options|
 
     build_number = get_build_number.to_i
 
-    if options[:force] != true
-        if have_new_feature == false
-            next
-        end
-
+    if options[:number]
+        build_number = options[:number]
+    else
+        # check testflight latest build number
         version = get_version_number(target: ENV["TARGET_NAME"])
-
         app_identifier_alpha = ENV["BUNDLE_ID_ALPHA"]
         if app_identifier_alpha == nil
             app_identifier_alpha = "#{ENV["BUNDLE_ID"]}.alpha"
@@ -56,12 +54,13 @@ lane :bump_build_number do |options|
         testflight_build_number = latest_testflight_build_number(
             app_identifier: app_identifier_alpha,
             version: version,
-            initial_build_number: 0
+            initial_build_number: 1
         )
         if testflight_build_number > build_number then
             build_number = testflight_build_number.to_i
         end
 
+        # check appstore latest build number
         appstore_build_number = app_store_build_number(
             live: false,
             version: version,
@@ -71,12 +70,8 @@ lane :bump_build_number do |options|
         if appstore_build_number > build_number then
             build_number = appstore_build_number
         end
-    end
 
-    if options[:number] == nil
         build_number = build_number + 1
-    else
-        build_number = options[:number]
     end
 
     increment_build_number({
