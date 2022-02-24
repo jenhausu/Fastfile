@@ -87,6 +87,7 @@ end
 
 desc "Push a new alpha build to TestFlight"
 lane :alpha do
+    bump_build_number
     archive("Alpha")
     upload_api
     changelog_update
@@ -104,6 +105,7 @@ end
 
 desc "Push a new alpha and beta build to TestFlight"
 lane :beta do
+    bump_build_number
     archive("Beta")
     upload_api
     changelog_update
@@ -112,6 +114,7 @@ end
 
 desc "Push a new alpha and release build to TestFlight"
 lane :release do
+    bump_build_number
     archive("Release")
     upload_api
     changelog_update
