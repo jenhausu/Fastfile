@@ -274,7 +274,6 @@ private_lane :have_new_feature do
 end
 
 def archive(scheme)
-    bump_build_number
     match(readonly: true)
     install_dependency
     gym(
