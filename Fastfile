@@ -54,7 +54,7 @@ lane :bump_build_number do |options|
         testflight_build_number = latest_testflight_build_number(
             app_identifier: app_identifier_alpha,
             version: version,
-            initial_build_number: 1
+            initial_build_number: 0
         )
         if testflight_build_number > build_number then
             build_number = testflight_build_number.to_i
