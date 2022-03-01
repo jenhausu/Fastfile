@@ -369,7 +369,7 @@ lane :send_notification do |options|
     slack_message(options[:message], options[:type], options[:success])
 end
 
-def slack_message(message, inform_level, success)
+def slack_message(message, pretext = nil, inform_level, success)
     commit = last_git_commit
 
     if is_ci
@@ -385,7 +385,8 @@ def slack_message(message, inform_level, success)
     end
 
     slack(
-        pretext: message,
+        message: message,
+        pretext: pretext.nil? ? message : pretext ,
         success: success,
         attachment_properties: {
             fields: [
