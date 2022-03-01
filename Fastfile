@@ -18,7 +18,7 @@ lane :build do
         scheme: ENV["SCHEME_DEV"],
         skip_archive: true
     )
-    slack_message("Build Successfully", true)
+    slack_message("Build Successfully", "developer", true)
 end
 
 desc "Run unit test."
@@ -30,7 +30,7 @@ lane :unit_test do |options|
         test_without_building: options[:without_build],
         cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
     )
-    slack_message("Unit Test Success", true)
+    slack_message("Unit Test Success", "developer", true)
 end
 
 desc "Bump build number."
@@ -91,7 +91,7 @@ lane :alpha do
     archive("Alpha")
     upload_api
     changelog_update
-    slack_message("✈️ Successfully Deliver to TestFlight! (ﾉ>ω<)ﾉ ✈️", true)
+    slack_message("✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
 end
 
 desc "Daily Archive"
@@ -99,7 +99,7 @@ lane :daily_archive do
     if have_new_feature
         alpha
     else
-        slack_message("Skip daily archive.", true)
+        slack_message("Skip daily archive.", "developer", true)
     end
 end
 
@@ -109,7 +109,7 @@ lane :beta do
     archive("Beta")
     upload_api
     changelog_update
-    slack_message("✈️ Successfully Deliver to TestFlight! (ﾉ>ω<)ﾉ ✈️", true)
+    slack_message("✈️ Successfully deliver a new bata version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
 end
 
 desc "Push a new alpha and release build to TestFlight"
@@ -118,7 +118,8 @@ lane :release do
     archive("Release")
     upload_api
     changelog_update
-    slack_message("✈️ Successfully Deliver to TestFlight! (ﾉ>ω<)ﾉ ✈️", true)
+    current_version = get_version_number(target: ENV["TARGET_NAME"])
+    slack_message("Submit version #{current_version} to App review.", "product_manager", true)
 end
 
 desc "Take screenshots and upload."
@@ -360,12 +361,12 @@ def git_push(force)
 end
 
 error do |lane, exception, options|
-    slack_message("Something Wrong! \n#{exception.error_info}", false)
+    slack_message("Something Wrong! \n#{exception.error_info}", "developer", false)
 end
 
 desc "Send notification messaage."
 lane :send_notification do |options|
-    slack_message(options[:message], options[:success])
+    slack_message(options[:message], options[:type], options[:success])
 end
 
 def slack_message(message, inform_level, success)
