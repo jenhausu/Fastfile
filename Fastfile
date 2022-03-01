@@ -23,7 +23,7 @@ end
 
 desc "Run unit test."
 lane :unit_test do |options|
-    install_library
+    install_dependency
     scan(
         scheme: ENV["SCHEME_TEST"],
         device: "iPhone 8",
@@ -129,7 +129,7 @@ lane :screenshots do |options|
         type: "development",
         readonly: true
     )
-    install_library
+    install_dependency
     snapshot(
         devices: options[:devices],
         output_directory: ENV["SNAPSHOT_PATH"],
