@@ -374,11 +374,11 @@ def slack_message(message, inform_level, success)
 
     if is_ci
         if inform_level == "product_manager"
-            slack_webhook_url = ENV["SLACK_PRODUCTION_WEBHOOK_URL"]
+            slack_webhook_url = ENV["SLACK_PRODUCTMANAGER_WEBHOOK_URL"]
         elsif inform_level == "developer"
-            slack_webhook_url = ENV["SLACK_DEVELOPMENT_WEBHOOK_URL"]
+            slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
         else
-            slack_webhook_url = ENV["SLACK_DEVELOPMENT_WEBHOOK_URL"]
+            slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
         end
     else
         slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
