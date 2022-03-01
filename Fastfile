@@ -368,10 +368,20 @@ lane :send_notification do |options|
     slack_message(options[:message], options[:success])
 end
 
-def slack_message(message, success)
+def slack_message(message, inform_level, success)
     commit = last_git_commit
 
-    slack_webhook_url = is_ci ? ENV["SLACK_WEBHOOK_URL"] : ENV["SLACK_TEST_WEBHOOK_URL"]
+    if is_ci
+        if inform_level == "product_manager"
+            slack_webhook_url = ENV["SLACK_PRODUCTION_WEBHOOK_URL"]
+        elsif inform_level == "developer"
+            slack_webhook_url = ENV["SLACK_DEVELOPMENT_WEBHOOK_URL"]
+        else
+            slack_webhook_url = ENV["SLACK_DEVELOPMENT_WEBHOOK_URL"]
+        end
+    else
+        slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
+    end
 
     slack(
         pretext: message,
