@@ -91,7 +91,7 @@ lane :alpha do
     archive("Alpha")
     upload_api
     changelog_update
-    slack_message("✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
+    slack_message("Archive Successfully", "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
 end
 
 desc "Daily Archive"
@@ -109,7 +109,7 @@ lane :beta do
     archive("Beta")
     upload_api
     changelog_update
-    slack_message("✈️ Successfully deliver a new bata version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
+    slack_message("Archive Successfully", "✈️ Successfully deliver a new bata version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
 end
 
 desc "Push a new alpha and release build to TestFlight"
@@ -361,12 +361,12 @@ def git_push(force)
 end
 
 error do |lane, exception, options|
-    slack_message("Something Wrong! \n#{exception}", "developer", false)
+    slack_message("Something Wrong!", "#{exception}", "developer", false)
 end
 
 desc "Send notification messaage."
 lane :send_notification do |options|
-    slack_message(options[:message], options[:type], options[:success])
+    slack_message(options[:message], options[:pretext], options[:type], options[:success])
 end
 
 def slack_message(message, pretext = nil, inform_level, success)
