@@ -37,7 +37,7 @@ desc "Bump build number."
 lane :bump_build_number do |options|
     if is_ci then
         sh(command: "git config --global user.name #{ENV["CI_NAME"]}")
-        sh(command: "git config --global user.email #{ENV["DEVELOPER_EMAIL"]}")
+        sh(command: "git config --global user.email #{ENV["CI_GIT_USER_EMAIL"]}")
     end
 
     build_number = get_build_number.to_i
