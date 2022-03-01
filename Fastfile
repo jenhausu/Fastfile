@@ -361,7 +361,7 @@ def git_push(force)
 end
 
 error do |lane, exception, options|
-    slack_message("Something Wrong! \n#{exception.error_info}", "developer", false)
+    slack_message("Something Wrong! \n#{exception}", "developer", false)
 end
 
 desc "Send notification messaage."
