@@ -26,7 +26,7 @@ lane :unit_test do |options|
     install_dependency
     scan(
         scheme: ENV["SCHEME_TEST"],
-        device: "iPhone 8",
+        device: "iPhone 13",
         test_without_building: options[:without_build],
         cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
     )
