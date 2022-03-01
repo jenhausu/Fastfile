@@ -30,7 +30,7 @@ lane :unit_test do |options|
         test_without_building: options[:without_build],
         cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
     )
-    slack_message("Unit Test Success", "developer", true)
+    slack_message("Unit Test Passed", "developer", true)
 end
 
 desc "Bump build number."
@@ -99,7 +99,7 @@ lane :daily_archive do
     if have_new_feature
         alpha
     else
-        slack_message("Skip daily archive.", "developer", true)
+        slack_message("Skip Daily Archive", "developer", true)
     end
 end
 
