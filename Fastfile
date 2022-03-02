@@ -2,8 +2,6 @@ require "tty-prompt"
 
 default_platform(:ios)
 
-ENV["SOURCE_PACKAGES_PATH"] = "Packages"
-
 before_all do |lane, options|
     if options[:fake_lane] != nil
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
@@ -28,7 +26,7 @@ lane :unit_test do |options|
         scheme: ENV["SCHEME_TEST"],
         device: "iPhone 13",
         test_without_building: options[:without_build],
-        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"]
+        cloned_source_packages_path: "Packages"
     )
     slack_message("Unit Test Passed", "developer", true)
 end
@@ -280,7 +278,7 @@ def archive(scheme)
     gym(
         scheme: scheme,
         export_method: "app-store",
-        cloned_source_packages_path: ENV["SOURCE_PACKAGES_PATH"],
+        cloned_source_packages_path: "Packages",
         silent: true
     )
 end
