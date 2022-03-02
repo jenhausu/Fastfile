@@ -385,8 +385,8 @@ def slack_message(message, pretext = nil, inform_level, success)
     end
 
     slack(
+        pretext: pretext,
         message: message,
-        pretext: pretext.nil? ? message : pretext ,
         success: success,
         attachment_properties: {
             fields: [
