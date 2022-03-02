@@ -360,8 +360,8 @@ def git_push(force)
     end
 end
 
-error do |lane, exception, options|
-    slack_message("#{lane} failed (┛`д´)┛︵┴─┴", "#{exception.to_s}", "developer", false)
+error do |lane, exception|
+    slack_message("#{lane} failed (┛`д´)┛︵┴─┴", exception.respond_to?(:error_info) ? exception.error_info.to_s : exception.to_s, "developer", false)
 end
 
 desc "Send notification messaage."
