@@ -288,7 +288,7 @@ lane :upload_api do |options|
 
     lane = ENV["FASTLANE_LANE_NAME"]
     if lane == "release"
-        sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_notes.txt")
+        sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_note.txt")
 
         upload_to_app_store(
             submission_information: {
@@ -301,7 +301,7 @@ lane :upload_api do |options|
             force: true  # Skip the HTML report file verification
         )
 
-        sh("git checkout ./metadata/zh-Hant/release_notes.txt")
+        sh("git checkout ./metadata/zh-Hant/release_note.txt")
     else
         testflight(
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
