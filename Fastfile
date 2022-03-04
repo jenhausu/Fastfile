@@ -370,7 +370,7 @@ end
 def slack_message(message = nil, pretext, inform_level, success)
     commit = last_git_commit
 
-    if is_ci
+    if is_ci || ENV["HAVE_NO_CI"] == "true"
         if inform_level == "product_manager"
             slack_webhook_url = ENV["SLACK_PRODUCTMANAGER_WEBHOOK_URL"]
         elsif inform_level == "developer"
