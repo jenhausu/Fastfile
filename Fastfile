@@ -255,9 +255,9 @@ end
 def update_carthage
     carthage(
         command: "update",
-	 	platform: "iOS",
-		use_xcframeworks: true,
-		cache_builds: true
+        platform: "iOS",
+        use_xcframeworks: true,
+        cache_builds: true
     )
     diff = sh("git diff")
     if diff != ""
