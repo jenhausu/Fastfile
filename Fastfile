@@ -279,7 +279,7 @@ def update_carthage
 end
 
 private_lane :have_new_feature do
-    last_archive_commit_hash = sh('git log -1 --grep "version\[daily\]:" --format=%h | tr -d "\n"')
+    last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
     new_faeture = sh("git log --oneline --grep 'feat:' --grep 'fix:' #{last_archive_commit_hash}...")
     new_faeture != "" ? true : false
 end
