@@ -85,7 +85,9 @@ end
 
 desc "Push a new alpha build to TestFlight"
 lane :alpha do
-    bump_build_number
+    if have_new_commit
+        bump_build_number
+    end
     archive("Alpha")
     upload_api
     changelog_update
@@ -103,7 +105,9 @@ end
 
 desc "Push a new alpha and beta build to TestFlight"
 lane :beta do
-    bump_build_number
+    if have_new_commit
+        bump_build_number
+    end
     archive("Beta")
     upload_api
     changelog_update
@@ -112,12 +116,20 @@ end
 
 desc "Push a new alpha and release build to TestFlight"
 lane :release do
-    bump_build_number
+    if have_new_commit
+        bump_build_number
+    end
     archive("Release")
     upload_api
     changelog_update
     current_version = get_version_number(target: ENV["TARGET_NAME"])
     slack_message("Submit version #{current_version} to App review.", "product_manager", true)
+end
+
+def have_new_commit
+    last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
+    new_commit = sh("git log --oneline #{last_archive_commit_hash}...")
+    new_commit != "" ? true : false
 end
 
 desc "Take screenshots and upload."
