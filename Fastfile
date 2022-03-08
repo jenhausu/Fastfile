@@ -6,6 +6,7 @@ before_all do |lane, options|
     if options[:fake_lane] != nil
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
     end
+    setup_ci
 end
 
 desc "Build the project."
