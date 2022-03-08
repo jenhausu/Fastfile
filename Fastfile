@@ -210,7 +210,7 @@ lane :bump_version do |options|
             bump_type: type
         )
         increment_build_number(
-            build_number: "0"
+            build_number: "1"
         )
         commit_version_bump(
             message: "version[#{type}]: #{(get_version_number(target: ENV["TARGET_NAME"]))}",
