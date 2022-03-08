@@ -130,7 +130,7 @@ lane :release do
 end
 
 def have_new_commit
-    last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
+    last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
     new_commit = sh("git log --oneline #{last_archive_commit_hash}...")
     new_commit != "" ? true : false
 end
