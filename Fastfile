@@ -303,8 +303,13 @@ end
 lane :upload_api do |options|
     changelog = get_changelog
 
-    lane = ENV["FASTLANE_LANE_NAME"]
-    if lane == "release"
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_filepath: ENV["APP_STORE_CONNECT_API_P8_FILEPATH"]
+    )
+
+    if ENV["FASTLANE_LANE_NAME"] == "release"
         sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_notes.txt")
 
         upload_to_app_store(
@@ -321,7 +326,6 @@ lane :upload_api do |options|
         sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
         testflight(
-            apple_id: ENV["FASTLANE_USER"],
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
             changelog: changelog,
             distribute_external: options[:distribute_external],
