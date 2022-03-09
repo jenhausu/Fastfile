@@ -9,6 +9,11 @@ before_all do |lane, options|
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
     end
     setup_ci
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_filepath: ENV["APP_STORE_CONNECT_API_P8_FILEPATH"]
+    )
 end
 
 desc "Build the project."
@@ -302,12 +307,6 @@ end
 
 lane :upload_api do |options|
     changelog = get_changelog
-
-    app_store_connect_api_key(
-      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
-      key_filepath: ENV["APP_STORE_CONNECT_API_P8_FILEPATH"]
-    )
 
     if ENV["FASTLANE_LANE_NAME"] == "release"
         sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_notes.txt")
