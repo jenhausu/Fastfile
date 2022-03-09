@@ -2,6 +2,8 @@ require "tty-prompt"
 
 default_platform(:ios)
 
+ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
+
 before_all do |lane, options|
     if options[:fake_lane] != nil
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
