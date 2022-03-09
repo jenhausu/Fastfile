@@ -413,6 +413,10 @@ def slack_message(message = nil, pretext, inform_level, success)
               {
                 title: "Built by",
                 value: ENV["CI_NAME"] || sh(command: "git config user.name")
+              },
+              {
+                title: "Log Page",
+                value: "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/runs/#{ENV["RUN_ID"]}?check_suite_focus=true"
               }
           ]
         },
