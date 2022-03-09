@@ -321,6 +321,7 @@ lane :upload_api do |options|
         sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
         testflight(
+            apple_id: ENV["FASTLANE_USER"],
             app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
             changelog: changelog,
             distribute_external: options[:distribute_external],
