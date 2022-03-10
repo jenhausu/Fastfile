@@ -303,7 +303,7 @@ end
 
 def archive(scheme)
   match(readonly: true) if is_ci
-  install_dependency
+  install_dependency if is_ci
   gym(
     scheme: scheme,
     export_method: "app-store",
