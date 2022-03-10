@@ -100,7 +100,7 @@ lane :alpha do
     upload_api
     changelog = get_changelog
     changelog_update
-    slack_message("✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️", changelog, "product_manager", true)
+    slack_message("✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "測試內容\n#{changelog}", "product_manager", true)
 end
 
 desc "Daily Archive"
@@ -133,7 +133,7 @@ lane :release do
     changelog = get_changelog
     changelog_update
     current_version = get_version_number(target: ENV["TARGET_NAME"])
-    slack_message("Submit version #{current_version} to App review.", changelog, "product_manager", true)
+    slack_message("Submit version #{current_version} to App review.", "此版本新增的功能\n#{changelog}", "product_manager", true)
 end
 
 def have_new_commit
