@@ -302,14 +302,14 @@ private_lane :have_new_feature do
 end
 
 def archive(scheme)
-    match(readonly: true)
-    install_dependency
-    gym(
-        scheme: scheme,
-        export_method: "app-store",
-        cloned_source_packages_path: "Packages",
-        silent: true
-    )
+  match(readonly: true)
+  install_dependency
+  gym(
+    scheme: scheme,
+    export_method: "app-store",
+    cloned_source_packages_path: "Packages",
+    silent: true
+  )
 end
 
 lane :upload_api do |options|
