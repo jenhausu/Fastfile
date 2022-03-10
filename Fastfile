@@ -302,7 +302,7 @@ private_lane :have_new_feature do
 end
 
 def archive(scheme)
-  match(readonly: true)
+  match(readonly: true) if is_ci
   install_dependency
   gym(
     scheme: scheme,
