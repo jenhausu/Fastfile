@@ -423,19 +423,26 @@ def slack_message(message = nil, pretext, inform_level, success)
         slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
     end
 
-    fields = { "Version" => get_version_number(target: ENV["TARGET_NAME"]),
-               "title" => "Built by", 
-               "value" => ENV["CI_NAME"] || sh(command: "git config user.name"), "short": true }
+    fields = [{ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true }]
+    fields = fields.push({ "title": "Branch", "value": git_branch, "short": true })
+    fields = fields.push({ "title": "Version", "value": get_version_number(target: ENV["TARGET_NAME"]), "short": true })
+    fields = fields.push({ "title": "Build Number", "value": get_build_number, "short": true })
+    fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": true })
+    fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true })
+    fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true })
+    fields = fields.push({ "title": "Built by", "value": ENV["CI_NAME"] || sh(command: "git config user.name") })
+
     if is_ci
-      fields = fields.merge({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
+      fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
     end
 
     slack(
         message: message,
         pretext: pretext,
         success: success,
+        default_payloads: [],
         attachment_properties: {
-            fields: [ fields ]
+            fields: fields
         },
         slack_url: slack_webhook_url
     )
