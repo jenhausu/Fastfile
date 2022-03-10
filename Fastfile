@@ -403,21 +403,17 @@ def slack_message(message = nil, pretext, inform_level, success)
         slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
     end
 
+    fields = { "title" => "Built by", "value" => ENV["CI_NAME"] || sh(command: "git config user.name"), "short": true }
+    if is_ci
+      fields = fields.merge({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
+    end
+
     slack(
         message: message,
         pretext: pretext,
         success: success,
         attachment_properties: {
-            fields: [
-              {
-                title: "Built by",
-                value: ENV["CI_NAME"] || sh(command: "git config user.name")
-              },
-              {
-                title: "Log Page",
-                value: "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/runs/#{ENV["RUN_ID"]}?check_suite_focus=true"
-              }
-          ]
+            fields: [ fields ]
         },
         slack_url: slack_webhook_url
     )
