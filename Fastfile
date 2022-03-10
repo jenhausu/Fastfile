@@ -9,6 +9,9 @@ before_all do |lane, options|
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
     end
     setup_ci
+    ensure_env_vars(
+      env_vars: ['APP_STORE_CONNECT_API_KEY_ID', 'APP_STORE_CONNECT_API_ISSUER_ID', 'APP_STORE_CONNECT_API_P8_FILEPATH']
+    )
     app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
@@ -45,6 +48,10 @@ lane :bump_build_number do |options|
         sh(command: "git config --global user.name #{ENV["CI_NAME"]}")
         sh(command: "git config --global user.email #{ENV["CI_GIT_USER_EMAIL"]}")
     end
+
+    ensure_env_vars(
+      env_vars: ['TARGET_NAME', 'BUNDLE_ID', 'PROJECT_NAME']
+    )
 
     build_number = get_build_number.to_i
 
@@ -389,6 +396,10 @@ lane :send_notification do |options|
 end
 
 def slack_message(message = nil, pretext, inform_level, success)
+  ensure_env_vars(
+    env_vars: ['SLACK_PRODUCTMANAGER_WEBHOOK_URL', 'SLACK_DEVELOPER_WEBHOOK_URL']
+  )
+
     commit = last_git_commit
 
     if is_ci || ENV["HAVE_NO_CI"] == "true"
