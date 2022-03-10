@@ -401,10 +401,10 @@ end
 
 desc "Send notification messaage."
 lane :send_notification do |options|
-    slack_message(options[:message], options[:pretext], options[:type], options[:success])
+    slack_message(options[:title], options[:message], options[:type], options[:success])
 end
 
-def slack_message(message = nil, pretext, inform_level, success)
+def slack_message(title, message = nil, inform_level, success)
   ensure_env_vars(
     env_vars: ['SLACK_PRODUCTMANAGER_WEBHOOK_URL', 'SLACK_DEVELOPER_WEBHOOK_URL']
   )
@@ -437,8 +437,7 @@ def slack_message(message = nil, pretext, inform_level, success)
     end
 
     slack(
-        message: message,
-        pretext: pretext,
+        pretext: "#{title}\n#{message}",
         success: success,
         default_payloads: [],
         attachment_properties: {
