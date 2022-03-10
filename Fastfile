@@ -414,7 +414,9 @@ def slack_message(message = nil, pretext, inform_level, success)
         slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
     end
 
-    fields = { "title" => "Built by", "value" => ENV["CI_NAME"] || sh(command: "git config user.name"), "short": true }
+    fields = { "Version" => get_version_number(target: ENV["TARGET_NAME"]),
+               "title" => "Built by", 
+               "value" => ENV["CI_NAME"] || sh(command: "git config user.name"), "short": true }
     if is_ci
       fields = fields.merge({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
     end
