@@ -401,7 +401,7 @@ end
 
 desc "Send notification messaage."
 lane :send_notification do |options|
-    slack_message(options[:title], options[:message], options[:type], options[:success])
+    slack_message(options[:title], options[:message], options[:inform_level], options[:success])
 end
 
 def slack_message(title, message = nil, inform_level, success)
