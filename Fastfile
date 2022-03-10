@@ -423,14 +423,19 @@ def slack_message(title, message = nil, inform_level, success)
         slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
     end
 
-    fields = [{ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true }]
-    fields = fields.push({ "title": "Branch", "value": git_branch, "short": true })
+    fields = []
+    if inform_level == "developer"
+      fields = fields.push({ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true })
+      fields = fields.push({ "title": "Branch", "value": git_branch, "short": true })
+    end
     fields = fields.push({ "title": "Version", "value": get_version_number(target: ENV["TARGET_NAME"]), "short": true })
     fields = fields.push({ "title": "Build Number", "value": get_build_number, "short": true })
-    fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": true })
-    fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true })
-    fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true })
-    fields = fields.push({ "title": "Built by", "value": ENV["CI_NAME"] || sh(command: "git config user.name") })
+    if inform_level == "developer"
+      fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": true })
+      fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true })
+      fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true })
+      fields = fields.push({ "title": "Built by", "value": ENV["CI_NAME"] || sh(command: "git config user.name") })
+    end
 
     if is_ci
       fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
