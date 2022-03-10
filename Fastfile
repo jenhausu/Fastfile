@@ -437,7 +437,7 @@ def slack_message(title, message = nil, inform_level, success)
       fields = fields.push({ "title": "Built by", "value": ENV["CI_NAME"] || sh(command: "git config user.name") })
     end
 
-    if is_ci
+    if is_ci && inform_level == "developer"
       fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
     end
 
