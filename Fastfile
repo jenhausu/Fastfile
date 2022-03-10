@@ -107,7 +107,16 @@ lane :alpha do
     upload_api
     changelog = get_changelog
     changelog_update
-    slack_message("✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "測試內容\n#{changelog}", "product_manager", true)
+
+    message = "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️"
+    if ENV["ALPHA_RELEASE_MESSAGE"]
+      message = ENV["ALPHA_RELEASE_MESSAGE"]
+    end
+
+    if changelog != nil
+      pretext = "*此版更新內容\n#{changelog}*"
+    end
+    slack_message(message, pretext, "product_manager", true)
 end
 
 desc "Daily Archive"
