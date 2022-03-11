@@ -457,8 +457,14 @@ def slack_message(title, message = nil, inform_level, success)
       fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
     end
 
+    if message
+      pretext = "*#{title}*\n#{message}"
+    else
+      pretext = title
+    end
+
     slack(
-        pretext: "#{title}\n#{message}",
+        pretext: pretext,
         success: success,
         default_payloads: [],
         attachment_properties: {
