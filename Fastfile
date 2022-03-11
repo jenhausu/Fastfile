@@ -42,6 +42,8 @@ lane :unit_test do |options|
     slack_message("Unit Test Passed", "developer", true)
 end
 
+# Bump Version
+
 desc "Bump build number."
 lane :bump_build_number do |options|
     if is_ci then
@@ -98,116 +100,6 @@ lane :bump_build_number do |options|
     git_push(false)
 end
 
-desc "Push a new alpha build to TestFlight"
-lane :alpha do
-    if have_new_commit
-        bump_build_number
-    end
-    archive("Alpha")
-    upload_api
-    changelog = get_changelog
-    changelog_update
-
-    message = "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️"
-    if ENV["ALPHA_RELEASE_MESSAGE"]
-      message = ENV["ALPHA_RELEASE_MESSAGE"]
-    end
-
-    if changelog != nil
-      pretext = "*此版更新內容\n#{changelog}*"
-    end
-    slack_message(message, pretext, "product_manager", true)
-end
-
-desc "Daily Archive"
-lane :daily_archive do
-    if have_new_feature
-        alpha
-    else
-        slack_message("Skip Daily Archive", "developer", true)
-    end
-end
-
-desc "Push a new alpha and beta build to TestFlight"
-lane :beta do
-    if have_new_commit
-        bump_build_number
-    end
-    archive("Beta")
-    upload_api
-    changelog_update
-    slack_message("Archive Successfully", "✈️ Successfully deliver a new bata version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
-end
-
-desc "Push a new alpha and release build to TestFlight"
-lane :release do
-    if have_new_commit
-        bump_build_number
-    end
-    archive("Release")
-    upload_api
-    changelog = get_changelog
-    changelog_update
-    current_version = get_version_number(target: ENV["TARGET_NAME"])
-    slack_message("Submit version #{current_version} to App review.", "此版本新增的功能\n#{changelog}", "product_manager", true)
-end
-
-def have_new_commit
-    last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
-    new_commit = sh("git log --oneline #{last_archive_commit_hash}...")
-    new_commit != "" ? true : false
-end
-
-desc "Take screenshots and upload."
-lane :screenshots do |options|
-    match(
-        app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
-        type: "development",
-        readonly: true
-    )
-    install_dependency
-    snapshot(
-        devices: options[:devices],
-        output_directory: ENV["SNAPSHOT_PATH"],
-        skip_open_summary: is_ci,
-        skip_helper_version_check: is_ci
-    )
-    upload_to_app_store(
-        skip_binary_upload: true,
-        run_precheck_before_submit: false,
-        screenshots_path: ENV["SNAPSHOT_PATH"],
-        force: is_ci, # Skip the HTML report file verification
-        app_identifier: ENV["BUNDLE_ID"]
-    )
-end
-
-desc "Update meta data."
-lane :update_meta_data do
-    upload_to_app_store(
-        skip_binary_upload: true,
-        run_precheck_before_submit: false,
-        metadata_path: "./metadata",
-				automatic_release: false,
-        force: is_ci # Skip the HTML report file verification
-    )
-end
-
-desc "Register new device."
-lane :add_device do
-    prompt = TTY::Prompt.new
-
-    device_name = prompt.ask("Device Name: ", required: true)
-    device_id = prompt.ask("UDID: ", required: true)
-    register_devices(
-        devices: {
-            device_name => device_id
-        }
-    )
-    match(force: true)
-
-    UI.success "[fastlane] Automatically add device, Name: #{device_name}, Identifier: #{device_id}."
-end
-
 desc "Bump version with interactive command line mode."
 lane :bump_version do |options|
     if options[:version]
@@ -248,6 +140,70 @@ lane :bump_version do |options|
     end
 end
 
+# Archive
+
+lane :alpha do
+    if have_new_commit
+        bump_build_number
+    end
+    archive("Alpha")
+    upload_api
+    changelog = get_changelog
+    changelog_update
+
+    message = "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️"
+    if ENV["ALPHA_RELEASE_MESSAGE"]
+      message = ENV["ALPHA_RELEASE_MESSAGE"]
+    end
+
+    if changelog != nil
+      pretext = "*此版更新內容\n#{changelog}*"
+    end
+    slack_message(message, pretext, "product_manager", true)
+end
+
+lane :beta do
+    if have_new_commit
+        bump_build_number
+    end
+    archive("Beta")
+    upload_api
+    changelog_update
+    slack_message("Archive Successfully", "✈️ Successfully deliver a new bata version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
+end
+
+lane :release do
+    if have_new_commit
+        bump_build_number
+    end
+    archive("Release")
+    upload_api
+    changelog = get_changelog
+    changelog_update
+    current_version = get_version_number(target: ENV["TARGET_NAME"])
+    slack_message("Submit version #{current_version} to App review.", "此版本新增的功能\n#{changelog}", "product_manager", true)
+end
+
+lane :daily_archive do
+    if have_new_feature
+        alpha
+    else
+        slack_message("Skip Daily Archive", "developer", true)
+    end
+end
+
+private_lane :have_new_feature do
+    last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
+    new_faeture = sh("git log --oneline --grep 'feat:' --grep 'fix:' #{last_archive_commit_hash}...")
+    new_faeture != "" ? true : false
+end
+
+def have_new_commit
+    last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
+    new_commit = sh("git log --oneline #{last_archive_commit_hash}...")
+    new_commit != "" ? true : false
+end
+
 lane :install_dependency do
     if File.file?(".././Cartfile")
         carthage(
@@ -262,52 +218,6 @@ lane :install_dependency do
             repo_update: is_ci
         )
     end
-end
-
-lane :update_dependency do
-    update_bundle
-    update_cocoapods
-    update_carthage
-    git_push
-end
-
-def update_bundle
-    sh("bundle update")
-    sh("bundle exec fastlane update_plugins")
-    diff = sh("git diff")
-    if diff != ""
-        git_add(path: "./Gemfile.lock")
-        sh("git commit -m 'lib[bundle]: update'")
-    end
-end
-
-def update_cocoapods
-    sh(command: "bundle exec pod update")
-    diff = sh("git diff")
-    if diff != ""
-        git_add(path: "./Podfile.lock")
-        sh("git commit -m 'lib[cocoapods]: update'")
-    end
-end
-
-def update_carthage
-    carthage(
-        command: "update",
-        platform: "iOS",
-        use_xcframeworks: true,
-        cache_builds: true
-    )
-    diff = sh("git diff")
-    if diff != ""
-        git_add(path: "./Cartfile.resolved")
-        sh("git commit -m 'lib[carthage]: update'")
-    end
-end
-
-private_lane :have_new_feature do
-    last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-    new_faeture = sh("git log --oneline --grep 'feat:' --grep 'fix:' #{last_archive_commit_hash}...")
-    new_faeture != "" ? true : false
 end
 
 def archive(scheme)
@@ -349,6 +259,50 @@ lane :upload_api do |options|
     end
 end
 
+# Library
+
+lane :update_dependency do
+    update_bundle
+    update_cocoapods
+    update_carthage
+    git_push
+end
+
+def update_bundle
+    sh("bundle update")
+    sh("bundle exec fastlane update_plugins")
+    diff = sh("git diff")
+    if diff != ""
+        git_add(path: "./Gemfile.lock")
+        sh("git commit -m 'lib[bundle]: update'")
+    end
+end
+
+def update_cocoapods
+    sh(command: "bundle exec pod update")
+    diff = sh("git diff")
+    if diff != ""
+        git_add(path: "./Podfile.lock")
+        sh("git commit -m 'lib[cocoapods]: update'")
+    end
+end
+
+def update_carthage
+    carthage(
+        command: "update",
+        platform: "iOS",
+        use_xcframeworks: true,
+        cache_builds: true
+    )
+    diff = sh("git diff")
+    if diff != ""
+        git_add(path: "./Cartfile.resolved")
+        sh("git commit -m 'lib[carthage]: update'")
+    end
+end
+
+# Change Log
+
 def get_changelog
     if ENV["FASTLANE_LANE_NAME"] == "release"
         read_changelog(
@@ -384,6 +338,59 @@ def changelog_update
     end
 end
 
+# Meta Data
+
+desc "Take screenshots and upload."
+lane :screenshots do |options|
+    match(
+        app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
+        type: "development",
+        readonly: true
+    )
+    install_dependency
+    snapshot(
+        devices: options[:devices],
+        output_directory: ENV["SNAPSHOT_PATH"],
+        skip_open_summary: is_ci,
+        skip_helper_version_check: is_ci
+    )
+    upload_to_app_store(
+        skip_binary_upload: true,
+        run_precheck_before_submit: false,
+        screenshots_path: ENV["SNAPSHOT_PATH"],
+        force: is_ci, # Skip the HTML report file verification
+        app_identifier: ENV["BUNDLE_ID"]
+    )
+end
+
+lane :update_meta_data do
+    upload_to_app_store(
+        skip_binary_upload: true,
+        run_precheck_before_submit: false,
+        metadata_path: "./metadata",
+				automatic_release: false,
+        force: is_ci # Skip the HTML report file verification
+    )
+end
+
+# Others
+
+desc "Register new device."
+lane :add_device do
+    prompt = TTY::Prompt.new
+
+    device_name = prompt.ask("Device Name: ", required: true)
+    device_id = prompt.ask("UDID: ", required: true)
+    register_devices(
+        devices: {
+            device_name => device_id
+        }
+    )
+    match(force: true)
+
+    UI.success "[fastlane] Automatically add device, Name: #{device_name}, Identifier: #{device_id}."
+end
+
 def git_push(force)
     if is_ci
         push_to_git_remote(
@@ -395,9 +402,13 @@ def git_push(force)
     end
 end
 
+# Error
+
 error do |lane, exception|
     slack_message("#{lane} failed (┛`д´)┛︵┴─┴", exception.respond_to?(:error_info) ? exception.error_info.to_s : exception.to_s, "developer", false)
 end
+
+# Slack
 
 desc "Send notification messaage."
 lane :send_notification do |options|
