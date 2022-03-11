@@ -255,12 +255,13 @@ lane :upload_api do |options|
 
         sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
-        testflight(
-            app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
-            changelog: changelog,
-            distribute_external: options[:distribute_external],
-            groups: options[:external_groups]
-        )
+      is_distribute_external = ENV["EXTERNAL_GROUPS"] ? true : false
+      testflight(
+        app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+        changelog: changelog,
+        distribute_external: is_distribute_external,
+        groups: ENV["AUTO_DISTRIBUTE_EXTERNAL_GROUPS"]
+      )
     end
 end
 
