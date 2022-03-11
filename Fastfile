@@ -19,6 +19,11 @@ before_all do |lane, options|
     )
 end
 
+after_all do |lane, options|
+  # avoid README.md auto update after new fastfile run
+  sh("git checkout ./README.md")
+end
+
 desc "Build the project."
 lane :build do
     match(readonly: true)
