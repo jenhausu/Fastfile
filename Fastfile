@@ -1,4 +1,4 @@
-require "tty-prompt"
+fastlane_require "tty-prompt"
 
 default_platform(:ios)
 
