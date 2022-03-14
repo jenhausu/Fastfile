@@ -454,6 +454,9 @@ def slack_message(title, message = nil, inform_level, success)
     end
 
     fields = []
+    if ENV["DEBUG_MODE"] == "true"
+      inform_level = "developer"
+    end
     if inform_level == "developer"
       fields = fields.push({ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true })
       fields = fields.push({ "title": "Branch", "value": git_branch, "short": true })
