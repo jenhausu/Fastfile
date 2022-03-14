@@ -23,6 +23,7 @@ after_all do |lane, options|
   # avoid README.md auto update after new fastfile run
   if is_git_status_dirty
     git_commit(path: "./fastlane/README.md", message: "doc[ci]: fastlane README auto update")
+    git_push
   end
 end
 
