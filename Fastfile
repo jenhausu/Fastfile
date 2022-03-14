@@ -106,7 +106,7 @@ lane :bump_build_number do |options|
         xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
     )
 
-    git_push(false)
+    git_push
 end
 
 desc "Bump version with interactive command line mode."
@@ -346,7 +346,7 @@ def changelog_update
     if is_git_status_dirty
         git_add(path: ENV["CHANGELOG_PATH"])
         sh("git commit -m 'docs[changelog]: update'")
-        git_push(true)
+        git_push
     end
 end
 
@@ -410,13 +410,12 @@ lane :generate_badge_icon do |options|
   )
 end
 
-def git_push(force)
+def git_push
     if is_ci
         push_to_git_remote(
             remote: "origin",
             local_branch: git_branch,
-            remote_branch: git_branch,
-            force: force
+            remote_branch: git_branch
         )
     end
 end
