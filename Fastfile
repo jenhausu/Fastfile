@@ -228,6 +228,12 @@ end
 def archive(scheme)
   match(readonly: true) if is_ci
   install_dependency if is_ci
+  if ENV["FASTLANE_LANE_NAME"] != release && ENV["ADD_BADGE_ICON"] == "true"
+    generate_badge_icon(
+      image: ENV["FASTLANE_LANE_NAME"],
+      project_name: ENV["PROJECT_NAME"]
+    )
+  end
   gym(
     scheme: scheme,
     export_method: "app-store",
@@ -395,6 +401,13 @@ lane :add_device do
     match(force: true)
 
     UI.success "[fastlane] Automatically add device, Name: #{device_name}, Identifier: #{device_id}."
+end
+
+lane :generate_badge_icon do |options|
+  add_badge(
+    custom: "./fastlane/badge/#{options[:image]}.png",
+    glob: "/**/#{options[:project_name]}/Assets.xcassets/*.appiconset/*.{png,PNG}"
+  )
 end
 
 def git_push(force)
