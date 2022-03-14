@@ -26,8 +26,8 @@ end
 
 desc "Build the project."
 lane :build do
-    match(readonly: true)
-    install_dependency
+    match(readonly: true) if is_ci
+    install_dependency if is_ci
     gym(
         scheme: ENV["SCHEME_DEV"],
         skip_archive: true
