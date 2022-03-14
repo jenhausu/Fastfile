@@ -21,8 +21,12 @@ end
 
 after_all do |lane, options|
   # avoid README.md auto update after new fastfile run
-  sh("git checkout ./README.md")
+  diff = sh("git diff")
+  if diff != ""
+    git_commit(path: "./fastlane/README.md", message: "doc[ci]: fastlane README auto update")
+  end
 end
+
 
 desc "Build the project."
 lane :build do
