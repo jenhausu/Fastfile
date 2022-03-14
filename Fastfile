@@ -21,8 +21,7 @@ end
 
 after_all do |lane, options|
   # avoid README.md auto update after new fastfile run
-  diff = sh("git diff")
-  if diff != ""
+  if is_git_status_dirty
     git_commit(path: "./fastlane/README.md", message: "doc[ci]: fastlane README auto update")
   end
 end
@@ -287,8 +286,7 @@ end
 def update_bundle
     sh("bundle update")
     sh("bundle exec fastlane update_plugins")
-    diff = sh("git diff")
-    if diff != ""
+    if is_git_status_dirty
         git_add(path: "./Gemfile.lock")
         sh("git commit -m 'lib[bundle]: update'")
     end
@@ -296,8 +294,7 @@ end
 
 def update_cocoapods
     sh(command: "bundle exec pod update")
-    diff = sh("git diff")
-    if diff != ""
+    if is_git_status_dirty
         git_add(path: "./Podfile.lock")
         sh("git commit -m 'lib[cocoapods]: update'")
     end
@@ -310,8 +307,7 @@ def update_carthage
         use_xcframeworks: true,
         cache_builds: true
     )
-    diff = sh("git diff")
-    if diff != ""
+    if is_git_status_dirty
         git_add(path: "./Cartfile.resolved")
         sh("git commit -m 'lib[carthage]: update'")
     end
@@ -346,8 +342,7 @@ def changelog_update
         )
     end
 
-    diff = sh("git diff")
-    if diff != ""
+    if is_git_status_dirty
         git_add(path: ENV["CHANGELOG_PATH"])
         sh("git commit -m 'docs[changelog]: update'")
         git_push(true)
@@ -425,10 +420,16 @@ def git_push(force)
     end
 end
 
+def is_git_status_dirty
+  diff = sh("git diff")
+  diff != ""
+end
+
 # Error
 
 error do |lane, exception|
-    slack_message("#{lane} failed (┛`д´)┛︵┴─┴", exception.respond_to?(:error_info) ? exception.error_info.to_s : exception.to_s, "developer", false)
+  sh("git checkout ./README.md")
+  slack_message("#{lane} failed (┛`д´)┛︵┴─┴", exception.respond_to?(:error_info) ? exception.error_info.to_s : exception.to_s, "developer", false)
 end
 
 # Slack
