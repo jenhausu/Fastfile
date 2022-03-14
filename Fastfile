@@ -232,7 +232,7 @@ end
 def archive(scheme)
   match(readonly: true) if is_ci
   install_dependency if is_ci
-  if ENV["FASTLANE_LANE_NAME"] != release && ENV["ADD_BADGE_ICON"] == "true"
+  if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
     generate_badge_icon(
       image: ENV["FASTLANE_LANE_NAME"],
       project_name: ENV["PROJECT_NAME"]
