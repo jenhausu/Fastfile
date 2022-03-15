@@ -235,7 +235,9 @@ def archive(scheme)
     cloned_source_packages_path: "Packages",
     silent: true
   )
-  sh("git checkout ./#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
+  if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
+    sh("git checkout ./#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
+  end
 end
 
 lane :upload_api do |options|
