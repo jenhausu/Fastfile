@@ -244,6 +244,7 @@ def archive(scheme)
     cloned_source_packages_path: "Packages",
     silent: true
   )
+  sh("git checkout ./#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
 end
 
 lane :upload_api do |options|
