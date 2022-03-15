@@ -165,7 +165,7 @@ lane :alpha do
       message = ENV["ALPHA_RELEASE_MESSAGE"]
     end
 
-    if changelog != nil
+    if changelog != ""
       pretext = "此版更新內容：\n#{changelog}"
     end
     slack_message(message, pretext, "product_manager", true)
