@@ -19,15 +19,6 @@ before_all do |lane, options|
     )
 end
 
-after_all do |lane, options|
-  # avoid README.md auto update after new fastfile run
-  if is_git_status_dirty
-    git_commit(path: "./fastlane/README.md", message: "doc[ci]: fastlane README auto update")
-    git_push
-  end
-end
-
-
 desc "Build the project."
 lane :build do
     match(readonly: true) if is_ci
@@ -424,6 +415,14 @@ end
 def is_git_status_dirty
   diff = sh("git diff")
   diff != ""
+end
+
+desc "commit README.md auto update after new fastfile run"
+lane :readme_auto_update do
+    if is_git_status_dirty
+        git_commit(path: "./fastlane/README.md", message: "doc[ci]: fastlane README auto update")
+        git_push
+    end
 end
 
 # Error
