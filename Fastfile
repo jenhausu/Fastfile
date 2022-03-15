@@ -160,7 +160,7 @@ lane :alpha do
     changelog = get_changelog
     changelog_update
 
-    message = "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️"
+    message = "✈️ Successfully deliver a new alpha version to TestFlight! ✈️"
     if ENV["ALPHA_RELEASE_MESSAGE"]
       message = ENV["ALPHA_RELEASE_MESSAGE"]
     end
