@@ -178,7 +178,7 @@ lane :beta do
     archive("Beta")
     upload_api
     changelog_update
-    slack_message("Archive Successfully", "✈️ Successfully deliver a new bata version to TestFlight! (ﾉ>ω<)ﾉ ✈️", "product_manager", true)
+    slack_message("TestFlight 上有新的 beta 版本", "product_manager", true)
 end
 
 lane :release do
