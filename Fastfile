@@ -352,8 +352,8 @@ lane :screenshots do |options|
         app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
         type: "development",
         readonly: true
-    )
-    install_dependency
+    ) if is_ci
+    install_dependency if is_ci
     snapshot(
         devices: options[:devices],
         output_directory: ENV["SNAPSHOT_PATH"],
