@@ -398,6 +398,7 @@ lane :add_device do
 end
 
 lane :generate_badge_icon do |options|
+  sh("brew install imagemagick")
   add_badge(
     custom: "./fastlane/badge/#{options[:image]}.png",
     glob: "/**/#{options[:project_name]}/Assets.xcassets/*.appiconset/*.{png,PNG}"
