@@ -205,19 +205,22 @@ def have_new_commit
 end
 
 lane :install_dependency do
-    if File.file?(".././Cartfile")
-        carthage(
-            platform: "iOS",
-            use_xcframeworks: true,
-            cache_builds: true
-        )
-    end
+  pod_install if File.file?("../Podfile")
+  carthage_install if File.file?("../Cartfile")
+end
 
-    if File.file?(".././Podfile")
-        cocoapods(
-            repo_update: is_ci
-        )
-    end
+lane :pod_install do
+  cocoapods(
+      repo_update: is_ci
+  )
+end
+
+lane :carthage_install do
+  carthage(
+      platform: "iOS",
+      use_xcframeworks: true,
+      cache_builds: true
+  )
 end
 
 def archive(scheme)
