@@ -47,7 +47,7 @@ end
 desc "Bump build number."
 lane :bump_build_number do |options|
     if is_ci then
-        sh(command: "git config --global user.name #{ENV["CI_NAME"]}")
+        sh(command: "git config --global user.name 'CI'")
         sh(command: "git config --global user.email #{ENV["CI_GIT_USER_EMAIL"]}")
     end
 
@@ -476,7 +476,7 @@ def slack_message(title, message = nil, inform_level, success)
       fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": true })
       fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true })
       fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true })
-      fields = fields.push({ "title": "Built by", "value": ENV["CI_NAME"] || sh(command: "git config user.name") })
+      fields = fields.push({ "title": "Built by", "value": is_ci ? "CI" : sh(command: "git config user.name") })
     end
 
     if is_ci && inform_level == "developer"
