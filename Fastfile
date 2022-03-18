@@ -446,8 +446,9 @@ def slack_message(title, message = nil, inform_level, success)
     env_vars: ['SLACK_PRODUCTMANAGER_WEBHOOK_URL', 'SLACK_DEVELOPER_WEBHOOK_URL']
   )
 
-    commit = last_git_commit
-
+    if ENV["DEBUG_MODE"] == "true"
+      inform_level = "developer"
+    end
     if is_ci || ENV["HAVE_NO_CI"] == "true"
         if inform_level == "product_manager"
             slack_webhook_url = ENV["SLACK_PRODUCTMANAGER_WEBHOOK_URL"]
@@ -461,9 +462,7 @@ def slack_message(title, message = nil, inform_level, success)
     end
 
     fields = []
-    if ENV["DEBUG_MODE"] == "true"
-      inform_level = "developer"
-    end
+    commit = last_git_commit
     if inform_level == "developer"
       fields = fields.push({ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true })
       fields = fields.push({ "title": "Branch", "value": git_branch, "short": true })
