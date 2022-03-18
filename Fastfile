@@ -236,7 +236,7 @@ def archive(scheme)
     silent: true
   )
   if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
-    sh("git checkout ./#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
+    sh("git checkout ../#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
   end
 end
 
