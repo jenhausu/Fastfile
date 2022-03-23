@@ -227,8 +227,13 @@ def archive(scheme)
   match(readonly: true) if is_ci
   install_dependency if is_ci
   if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
+    if ENV["FASTLANE_LANE_NAME"] == "daily_archive"
+      image = "alpha"
+    else
+      image = ENV["FASTLANE_LANE_NAME"]
+    end
     generate_badge_icon(
-      image: ENV["FASTLANE_LANE_NAME"],
+      image: image,
       project_name: ENV["PROJECT_NAME"]
     )
   end
