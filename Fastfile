@@ -454,16 +454,12 @@ def slack_message(title, message = nil, inform_level, success)
     if ENV["DEBUG_MODE"] == "true"
       inform_level = "developer"
     end
-    if is_ci || ENV["HAVE_NO_CI"] == "true"
-        if inform_level == "product_manager"
-            slack_webhook_url = ENV["SLACK_PRODUCTMANAGER_WEBHOOK_URL"]
-        elsif inform_level == "developer"
-            slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
-        else
-            slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
-        end
+    if inform_level == "product_manager"
+        slack_webhook_url = ENV["SLACK_PRODUCTMANAGER_WEBHOOK_URL"]
+    elsif inform_level == "developer"
+        slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
     else
-        slack_webhook_url = ENV["SLACK_TEST_WEBHOOK_URL"]
+        slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
     end
 
     fields = []
