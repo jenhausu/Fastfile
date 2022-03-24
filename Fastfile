@@ -321,12 +321,10 @@ end
 def get_changelog
     if ENV["FASTLANE_LANE_NAME"] == "release"
         read_changelog(
-            changelog_path: ENV["CHANGELOG_PATH"],
             section_identifier: "[New Release]"
         )
     else
         read_changelog(
-            changelog_path: ENV["CHANGELOG_PATH"],
             section_identifier: "[New Build]"
         )
     end
@@ -346,8 +344,7 @@ def changelog_update
     end
 
     if is_git_status_dirty
-        git_add(path: ENV["CHANGELOG_PATH"])
-        sh("git commit -m 'docs[changelog]: update'")
+        git_commit(path: "./CHANGELOG.md", message: "docs[changelog]: update")
         git_push
     end
 end
