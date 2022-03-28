@@ -209,7 +209,7 @@ lane :install_library do
 end
 
 lane :pod_install do
-    d = sh("diff 'Podfile.lock' 'Pods/Manifest.lock'")
+    d = sh("diff '../Podfile.lock' '../Pods/Manifest.lock'")
     if is_ci
         repo_update = d != "" ? true : false
     else 
