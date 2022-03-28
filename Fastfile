@@ -480,7 +480,9 @@ def slack_message(title, message = nil, inform_level, success)
       fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": true })
       fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true })
       fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true })
-      fields = fields.push({ "title": "Built by", "value": ENV["CI_NAME"] || sh(command: "git config user.name") })
+
+      build_by = is_ci ? ENV["CI_NAME"] : sh(command: "git config user.name")
+      fields = fields.push({ "title": "Built by", "value": build_by })
     end
 
     if is_ci && inform_level == "developer"
