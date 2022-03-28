@@ -209,9 +209,15 @@ lane :install_library do
 end
 
 lane :pod_install do
-  cocoapods(
-      repo_update: is_ci
-  )
+    d = sh("diff 'Podfile.lock' 'Pods/Manifest.lock'")
+    if is_ci
+        repo_update = d != "" ? true : false
+    else 
+        repo_update = false
+    end
+    cocoapods(
+        repo_update: repo_update
+    )
 end
 
 lane :carthage_install do
