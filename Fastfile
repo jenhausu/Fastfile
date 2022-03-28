@@ -260,17 +260,20 @@ end
 def archive(scheme)
   match(readonly: true) if is_ci
   install_library if is_ci
-  if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
-    if ENV["FASTLANE_LANE_NAME"] == "daily_archive"
-      image = "alpha"
-    else
-      image = ENV["FASTLANE_LANE_NAME"]
+
+  if ENV["ADD_BADGE_ICON"] == "true" && scheme != "Release"
+    lane_name = ENV["FASTLANE_LANE_NAME"]
+    if lane_name == "daily_archive" || lane_name == "alpha" || scheme == "Alpha"
+        image = "alpha"
+    elsif scheme == "Beta"
+        image = "beta"
     end
     generate_badge_icon(
       image: image,
       project_name: ENV["PROJECT_NAME"]
     )
   end
+
   gym(
     scheme: scheme,
     export_method: "app-store",
