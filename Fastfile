@@ -173,6 +173,18 @@ lane :beta do
     slack_message("TestFlight 上有新的 beta 版本", "product_manager", true)
 end
 
+lane :alpha_beta do 
+    if have_new_commit
+        bump_build_number
+    end
+    archive("Alpha")
+    upload_api
+    archive("Beta")
+    upload_api
+    changelog_update
+    slack_message("TestFlight 上有新的 Alpha, Beta 版本", "product_manager", true)
+end
+
 lane :release do
     if have_new_commit
         bump_build_number
