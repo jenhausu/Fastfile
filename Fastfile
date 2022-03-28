@@ -312,8 +312,7 @@ end
 def update_cocoapods
     sh(command: "bundle exec pod update")
     if is_git_status_dirty
-        git_add(path: "./Podfile.lock")
-        sh("git commit -m 'lib[cocoapods]: update'")
+        git_commit(path: "./Podfile.lock", message: "lib[pod]: update")
     end
 end
 
@@ -325,8 +324,7 @@ def update_carthage
         cache_builds: true
     )
     if is_git_status_dirty
-        git_add(path: "./Cartfile.resolved")
-        sh("git commit -m 'lib[carthage]: update'")
+        git_commit(path: "./Cartfile.resolved", message: "lib[carthage]: update")
     end
 end
 
