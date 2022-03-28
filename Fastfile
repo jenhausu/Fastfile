@@ -210,8 +210,9 @@ end
 
 lane :pod_install do
     if is_ci
-        d = sh("diff '../Podfile.lock' '../Pods/Manifest.lock'")
-        repo_update = d != "" ? true : false
+        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
+        pod_change = sh("git log --oneline --grep 'version[pod]:' #{last_archive_commit_hash}...")
+        repo_update = pod_change != "" ? true : false
     else 
         repo_update = false
     end
