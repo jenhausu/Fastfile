@@ -22,7 +22,7 @@ end
 desc "Build the project."
 lane :build do
     match(readonly: true) if is_ci
-    install_dependency if is_ci
+    install_library if is_ci
     gym(
         scheme: ENV["SCHEME_DEV"],
         skip_archive: true
@@ -32,7 +32,7 @@ end
 
 desc "Run unit test."
 lane :unit_test do |options|
-    install_dependency
+    install_library
     scan(
         scheme: ENV["SCHEME_TEST"],
         device: "iPhone 13",
@@ -203,7 +203,7 @@ def have_new_commit
     new_commit != "" ? true : false
 end
 
-lane :install_dependency do
+lane :install_library do
   pod_install if File.file?("../Podfile")
   carthage_install if File.file?("../Cartfile")
 end
@@ -224,7 +224,7 @@ end
 
 def archive(scheme)
   match(readonly: true) if is_ci
-  install_dependency if is_ci
+  install_library if is_ci
   if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
     if ENV["FASTLANE_LANE_NAME"] == "daily_archive"
       image = "alpha"
@@ -357,7 +357,7 @@ lane :screenshots do |options|
         type: "development",
         readonly: true
     ) if is_ci
-    install_dependency if is_ci
+    install_library if is_ci
     snapshot(
         devices: options[:devices],
         output_directory: ENV["SNAPSHOT_PATH"],
