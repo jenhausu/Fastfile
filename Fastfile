@@ -289,6 +289,7 @@ end
 
 lane :update_library do
     update_bundle
+    fastlane_update
     update_cocoapods
     update_carthage
     git_push
@@ -301,6 +302,11 @@ def update_bundle
         git_add(path: "./Gemfile.lock")
         sh("git commit -m 'lib[bundle]: update'")
     end
+end
+
+lane :fastlane_update do
+    update_fastlane
+    git_commit(path: "./Gemfile.lock", message: "lib[fastlane]: update")
 end
 
 def update_cocoapods
