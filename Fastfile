@@ -278,7 +278,7 @@ end
 
 # Library
 
-lane :update_dependency do
+lane :update_library do
     update_bundle
     update_cocoapods
     update_carthage
