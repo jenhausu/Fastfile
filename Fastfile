@@ -211,7 +211,7 @@ end
 lane :pod_install do
     if is_ci
         last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pod_change = sh("git log --oneline --grep 'version[pod]:' #{last_archive_commit_hash}...")
+        pod_change = sh("git log --oneline --grep 'versio\[pod\]:' #{last_archive_commit_hash}...")
         repo_update = pod_change != "" ? true : false
     else 
         repo_update = false
