@@ -404,7 +404,7 @@ lane :screenshots do |options|
     if options[:devices] != []
         devices = options[:devices]
     end
-    devices = ["iPhone 13", "iPhone 13 Pro Max"]
+    devices = ["iPhone 12", "iPhone 12 Pro Max"]
     snapshot(
         devices: devices,
         output_directory: ENV["SNAPSHOT_PATH"],
