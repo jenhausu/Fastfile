@@ -427,7 +427,6 @@ lane :update_meta_data do
         skip_binary_upload: true,
         run_precheck_before_submit: false,
         metadata_path: "./metadata",
-				automatic_release: false,
         force: is_ci # Skip the HTML report file verification
     )
 end
