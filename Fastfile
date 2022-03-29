@@ -514,7 +514,9 @@ end
 # Error
 
 error do |lane, exception|
-  slack_message("#{lane} failed (┛`д´)┛︵┴─┴", exception.respond_to?(:error_info) ? exception.error_info.to_s : exception.to_s, "developer", false)
+    if is_ci
+        slack_message("#{lane} failed (┛`д´)┛︵┴─┴", exception.respond_to?(:error_info) ? exception.error_info.to_s : exception.to_s, "developer", false)
+    end
 end
 
 # Slack
