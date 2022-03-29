@@ -400,8 +400,13 @@ lane :screenshots do |options|
         readonly: true
     ) if is_ci
     install_library if is_ci
+
+    if options[:devices] != []
+        devices = options[:devices]
+    end
+    devices = ["iPhone 13", "iPhone 13 Pro Max"]
     snapshot(
-        devices: options[:devices],
+        devices: devices,
         output_directory: ENV["SNAPSHOT_PATH"],
         skip_open_summary: is_ci,
         skip_helper_version_check: is_ci
