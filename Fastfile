@@ -408,6 +408,8 @@ lane :screenshots do |options|
     snapshot(
         devices: devices,
         output_directory: ENV["SNAPSHOT_PATH"],
+        override_status_bar: true,
+        localize_simulator: true,
         skip_open_summary: is_ci,
         skip_helper_version_check: is_ci
     )
