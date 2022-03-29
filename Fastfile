@@ -444,15 +444,17 @@ end
 
 lane :submit_for_review do
     deliver(
-        username: ENV["FASTLANE_USER"],
         submission_information: {
             add_id_info_uses_idfa: false
         },
         reject_if_possible: true, # Rejects the previously submitted build if it's in a state where it's possible
         submit_for_review: true,
+        automatic_release: false,
         phased_release: true,
         skip_binary_upload: true,
+        skip_metadata: true,
         skip_screenshots: true,
+        precheck_include_in_app_purchases: false,
         force: true  # Skip the HTML report file verification
     )
 
