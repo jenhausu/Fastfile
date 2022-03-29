@@ -291,7 +291,7 @@ lane :upload_api do |options|
     if ENV["FASTLANE_LANE_NAME"] == "release"
         sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_notes.txt")
 
-        upload_to_app_store(
+        deliver(
             submission_information: {
                 add_id_info_uses_idfa: false
             },
@@ -411,7 +411,7 @@ lane :screenshots do |options|
         skip_open_summary: is_ci,
         skip_helper_version_check: is_ci
     )
-    upload_to_app_store(
+    deliver(
         skip_binary_upload: true,
         run_precheck_before_submit: false,
         screenshots_path: ENV["SNAPSHOT_PATH"],
@@ -421,7 +421,7 @@ lane :screenshots do |options|
 end
 
 lane :update_meta_data do
-    upload_to_app_store(
+    deliver(
         skip_binary_upload: true,
         run_precheck_before_submit: false,
         metadata_path: "./metadata",
