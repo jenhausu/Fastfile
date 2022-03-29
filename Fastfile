@@ -420,6 +420,7 @@ lane :screenshots do |options|
         force: is_ci, # Skip the HTML report file verification
         app_identifier: ENV["BUNDLE_ID"]
     )
+    slack_message("螢幕截圖成功", "product_manager", true)
 end
 
 lane :update_snapshot do
@@ -452,6 +453,9 @@ lane :submit_for_review do
         skip_screenshots: true,
         force: true  # Skip the HTML report file verification
     )
+    
+    current_version = get_version_number(target: ENV["TARGET_NAME"])
+    slack_message("#{current_version} 版本送審了", "product_manager", true)
 end
 
 # Others
