@@ -25,7 +25,7 @@ lane :build do
     install_library if is_ci
     gym(
         scheme: ENV["SCHEME_DEV"],
-        export_method: "validation",
+        export_method: "development",
         cloned_source_packages_path: "Packages",
         skip_archive: true
     )
