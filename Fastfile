@@ -455,7 +455,7 @@ lane :submit_for_review do
         skip_metadata: true,
         skip_screenshots: true,
         precheck_include_in_app_purchases: false,
-        force: true  # Skip the HTML report file verification
+        force: is_ci  # Skip the HTML report file verification
     )
 
     current_version = get_version_number(target: ENV["TARGET_NAME"])
