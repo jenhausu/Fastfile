@@ -450,10 +450,11 @@ lane :submit_for_review do
         reject_if_possible: true, # Rejects the previously submitted build if it's in a state where it's possible
         submit_for_review: true,
         phased_release: true,
+        skip_binary_upload: true,
         skip_screenshots: true,
         force: true  # Skip the HTML report file verification
     )
-    
+
     current_version = get_version_number(target: ENV["TARGET_NAME"])
     slack_message("#{current_version} 版本送審了", "product_manager", true)
 end
