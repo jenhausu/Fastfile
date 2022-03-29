@@ -422,6 +422,16 @@ lane :screenshots do |options|
     )
 end
 
+lane :update_snapshot do
+    deliver(
+        app_identifier: ENV["BUNDLE_ID"],
+        screenshots_path: ENV["SNAPSHOT_PATH"],
+        overwrite_screenshots: true,
+        skip_binary_upload: true,
+        run_precheck_before_submit: false
+    )
+end
+
 lane :update_meta_data do
     deliver(
         skip_binary_upload: true,
