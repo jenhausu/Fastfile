@@ -263,31 +263,31 @@ lane :carthage_install do
 end
 
 def archive(scheme)
-  match(readonly: true) if is_ci
-  install_library if is_ci
-
-  if ENV["ADD_BADGE_ICON"] == "true" && scheme != "Release"
-    lane_name = ENV["FASTLANE_LANE_NAME"]
-    if lane_name == "daily_archive" || lane_name == "alpha" || scheme == "Alpha"
-        image = "alpha"
-    elsif scheme == "Beta"
-        image = "beta"
+    match(readonly: true) if is_ci
+    install_library if is_ci
+  
+    if ENV["ADD_BADGE_ICON"] == "true" && scheme != "Release"
+        lane_name = ENV["FASTLANE_LANE_NAME"]
+        if lane_name == "daily_archive" || lane_name == "alpha" || scheme == "Alpha"
+            image = "alpha"
+        elsif scheme == "Beta"
+            image = "beta"
+        end
+        generate_badge_icon(
+            image: image,
+            project_name: ENV["PROJECT_NAME"]
+        )
     end
-    generate_badge_icon(
-      image: image,
-      project_name: ENV["PROJECT_NAME"]
+  
+    gym(
+        scheme: scheme,
+        export_method: "app-store",
+        cloned_source_packages_path: "Packages",
+        silent: true
     )
-  end
-
-  gym(
-    scheme: scheme,
-    export_method: "app-store",
-    cloned_source_packages_path: "Packages",
-    silent: true
-  )
-  if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
-    sh("git checkout ../#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
-  end
+    if (ENV["FASTLANE_LANE_NAME"] != "release") && (ENV["ADD_BADGE_ICON"] == "true")
+        sh("git checkout ../#{ENV["PROJECT_NAME"]}/Assets.xcassets/")
+    end
 end
 
 lane :upload_api do |options|
