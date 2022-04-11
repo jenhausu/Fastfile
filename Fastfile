@@ -9,14 +9,19 @@ before_all do |lane, options|
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
     end
     setup_ci
-    ensure_env_vars(
-      env_vars: ['APP_STORE_CONNECT_API_KEY_ID', 'APP_STORE_CONNECT_API_ISSUER_ID', 'APP_STORE_CONNECT_API_P8_FILEPATH']
-    )
-    app_store_connect_api_key(
-      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
-      key_filepath: ENV["APP_STORE_CONNECT_API_P8_FILEPATH"]
-    )
+
+    begin
+        ensure_env_vars(
+            env_vars: ['APP_STORE_CONNECT_API_KEY_ID', 'APP_STORE_CONNECT_API_ISSUER_ID', 'APP_STORE_CONNECT_API_P8_FILEPATH']
+        )
+        app_store_connect_api_key(
+            key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+            issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+            key_filepath: ENV["APP_STORE_CONNECT_API_P8_FILEPATH"]
+        )
+    rescue
+        puts 'use normal login'
+    end
 end
 
 desc "Build the project."
