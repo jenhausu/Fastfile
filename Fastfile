@@ -262,6 +262,16 @@ lane :carthage_install do
   )
 end
 
+lane :carthage_update do |options|
+    carthage(
+        command: "update",
+        dependencies: options[:library],
+        platform: "iOS",
+        use_xcframeworks: true,
+        cache_builds: true
+    )
+end
+
 def archive(scheme)
     match(readonly: true) if is_ci
     install_library if is_ci
