@@ -30,9 +30,9 @@ lane :build do
     install_library if is_ci
     gym(
         scheme: ENV["SCHEME_DEV"],
-        export_method: "development",
+        export_method: "app-store",
         cloned_source_packages_path: "Packages",
-        skip_archive: true
+        silent: true
     )
     slack_message("Build Successfully", "developer", true)
 end
