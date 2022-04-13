@@ -163,8 +163,12 @@ lane :alpha do
     end
 
     if changelog != ""
-      pretext = "此版更新內容：\n#{changelog}"
+        pretext = "此版更新內容：\n#{changelog}"
+    else
+        last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
+        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
+
     slack_message(message, pretext, "product_manager", true)
 end
 
@@ -174,8 +178,15 @@ lane :beta do
     end
     archive("Beta")
     upload_api
+    changelog = get_changelog
+    if changelog != ""
+        pretext = "此版更新內容：\n#{changelog}"
+    else
+        last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
+        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
+    end
     changelog_update
-    slack_message("TestFlight 上有新的 beta 版本", "product_manager", true)
+    slack_message("TestFlight 上有新的 beta 版本", pretext, "product_manager", true)
 end
 
 lane :alpha_beta do 
@@ -186,8 +197,15 @@ lane :alpha_beta do
     upload_api
     archive("Beta")
     upload_api
+    changelog = get_changelog
+    if changelog != ""
+        pretext = "此版更新內容：\n#{changelog}"
+    else
+        last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
+        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
+    end
     changelog_update
-    slack_message("TestFlight 上有新的 Alpha, Beta 版本", "product_manager", true)
+    slack_message("TestFlight 上有新的 Alpha, Beta 版本", pretext, "product_manager", true)
 end
 
 lane :alpha_beta_release do 
@@ -200,8 +218,15 @@ lane :alpha_beta_release do
     upload_api
     archive("Release")
     upload_api
+    changelog = get_changelog
+    if changelog != ""
+        pretext = "此版更新內容：\n#{changelog}"
+    else
+        last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
+        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
+    end
     changelog_update
-    slack_message("TestFlight 上有新的 Alpha, Beta, Release 版本", "product_manager", true)
+    slack_message("TestFlight 上有新的 Alpha, Beta, Release 版本", pretext, "product_manager", true)
 end
 
 lane :release do
@@ -211,9 +236,15 @@ lane :release do
     archive("Release")
     upload_api
     changelog = get_changelog
+    if changelog != ""
+        pretext = "此版更新內容：\n#{changelog}"
+    else
+        last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
+        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
+    end
     changelog_update
     current_version = get_version_number(target: ENV["TARGET_NAME"])
-    slack_message("Submit version #{current_version} to App review.", "此版本新增的功能\n#{changelog}", "product_manager", true)
+    slack_message("Submit version #{current_version} to App review.", pretext, "product_manager", true)
 end
 
 lane :daily_archive do
