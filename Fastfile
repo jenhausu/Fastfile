@@ -162,7 +162,7 @@ lane :alpha do
       message = ENV["ALPHA_RELEASE_MESSAGE"]
     end
 
-    if changelog != ""
+    if changelog != nil
         pretext = "此版更新內容：\n#{changelog}"
     else
         last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
@@ -179,7 +179,7 @@ lane :beta do
     archive("Beta")
     upload_api
     changelog = get_changelog
-    if changelog != ""
+    if changelog != nil
         pretext = "此版更新內容：\n#{changelog}"
     else
         last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
@@ -219,7 +219,7 @@ lane :alpha_beta_release do
     archive("Release")
     upload_api
     changelog = get_changelog
-    if changelog != ""
+    if changelog != nil
         pretext = "此版更新內容：\n#{changelog}"
     else
         last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
@@ -236,7 +236,7 @@ lane :release do
     archive("Release")
     upload_api
     changelog = get_changelog
-    if changelog != ""
+    if changelog != nil
         pretext = "此版更新內容：\n#{changelog}"
     else
         last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
