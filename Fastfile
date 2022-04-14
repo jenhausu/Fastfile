@@ -1,5 +1,3 @@
-fastlane_require "tty-prompt"
-
 default_platform(:ios)
 
 ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
@@ -120,6 +118,7 @@ lane :bump_version do |options|
             xcodeproj: "./#{ENV["PROJECT_NAME"]}.xcodeproj"
         )
     else
+        fastlane_require "tty-prompt"
         prompt = TTY::Prompt.new
         type = prompt.select("Which type of version to bump?", cycle: true) do |menu|
               menu.choice 'major'
