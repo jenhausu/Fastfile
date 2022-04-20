@@ -1,3 +1,5 @@
+require 'envied'
+
 default_platform(:ios)
 
 ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
@@ -20,6 +22,8 @@ before_all do |lane, options|
     rescue
         puts 'use normal login'
     end
+
+    ENVied.require
 end
 
 desc "Build the project."
