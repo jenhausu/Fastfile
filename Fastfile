@@ -251,6 +251,10 @@ lane :release do
 end
 
 lane :daily_archive do
+    if ENVied.NOT_WORK_ON_CI
+        next
+    end
+    
     if have_new_feature
         alpha
     else
