@@ -28,6 +28,10 @@ end
 
 desc "Build the project."
 lane :build do
+    if ENVied.NOT_WORK_ON_CI
+        next
+    end
+    
     match(readonly: true) if is_ci
     install_library if is_ci
     gym(
