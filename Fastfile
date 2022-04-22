@@ -33,8 +33,8 @@ lane :build do
         next
     end
     
-    match(readonly: true) if is_ci
-    install_library if is_ci
+    match(readonly: true)
+    install_library
     gym(
         scheme: ENV["SCHEME_DEV"],
         export_method: "app-store",
