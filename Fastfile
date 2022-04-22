@@ -3,6 +3,7 @@ require 'envied'
 default_platform(:ios)
 
 ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
+ENV["NOT_WORK_ON_CI"] = "false"
 
 before_all do |lane, options|
     if options[:fake_lane] != nil
