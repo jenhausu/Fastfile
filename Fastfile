@@ -25,7 +25,12 @@ before_all do |lane, options|
     end
 
     ENVied.require
-    Dotenv.load('.env.local', '.env')
+
+    if is_ci
+
+    else
+        Dotenv.load('.env.local')
+    end
 end
 
 desc "Build the project."
