@@ -25,6 +25,7 @@ before_all do |lane, options|
     end
 
     ENVied.require
+    Dotenv.load('.env.local', '.env')
 end
 
 desc "Build the project."
