@@ -31,9 +31,7 @@ before_all do |lane, options|
         sh("touch Envfile")
     end
 
-    if is_ci
-
-    else
+    unless is_ci
         Dotenv.load('.env.local')
     end
 end
