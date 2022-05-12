@@ -36,13 +36,34 @@ before_all do |lane, options|
     end
 end
 
+desc "Create a new app on iTunesconnect."
+lane :create_new_app do
+    fastlane_require "tty-prompt"
+    prompt = TTY::Prompt.new
+
+    app_identifier = ENV["BUNDLE_ID"]
+    if ENV["BUNDLE_ID"] == nil
+        app_identifier = prompt.ask("App Identifier: ", required: true)
+    end
+
+    app_name = ENV["PROJECT_NAME"]
+    if ENV["PROJECT_NAME"] == nil
+        app_name = prompt.ask("App Name", required: true)
+    end
+
+    produce(
+        app_identifier: app_identifier,
+        app_name: app_name
+    )
+end
+
 desc "Build the project."
 lane :build do
     if ENVied.NOT_WORK_ON_CI
         next
     end
     
-    match(readonly: true)
+    match(readonly: true) unless ENVied.USE_AUTO_SIGN
     install_library
     gym(
         scheme: ENV["SCHEME_DEV"],
