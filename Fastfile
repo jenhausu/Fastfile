@@ -24,7 +24,12 @@ before_all do |lane, options|
         puts 'use normal login'
     end
 
-    ENVied.require
+    begin
+        # better way to access environment variable
+        ENVied.require
+    rescue
+        sh("touch Envfile")
+    end
 
     if is_ci
 
