@@ -210,6 +210,30 @@ lane :alpha do
     slack_message(message, pretext, "product_manager", true)
 end
 
+lane :adhoc do
+    if have_new_commit
+        bump_build_number
+    end
+    archive("Alpha", "ad-hoc")
+    upload_api(distribute_method: "Firebase")
+    changelog = get_changelog
+    changelog_update
+
+    message = "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️"
+    if ENV["ALPHA_RELEASE_MESSAGE"]
+      message = ENV["ALPHA_RELEASE_MESSAGE"]
+    end
+
+    if changelog != nil
+        pretext = "此版更新內容：\n#{changelog}"
+    else
+        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
+        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
+    end
+
+    slack_message(message, pretext, "product_manager", true)
+end
+
 lane :beta do
     if have_new_commit
         bump_build_number
@@ -345,12 +369,12 @@ lane :carthage_update do |options|
     )
 end
 
-def archive(scheme)
-    match(readonly: true) if is_ci
+def archive(scheme, method = "app-store")
+    match(readonly: true) if is_ci unless ENVied.USE_AUTO_SIGN
     install_library if is_ci
     gym(
         scheme: scheme,
-        export_method: "app-store",
+        export_method: method,
         cloned_source_packages_path: "Packages",
         silent: true
     )
@@ -375,13 +399,23 @@ lane :upload_api do |options|
 
         sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
-      is_distribute_external = ENV["EXTERNAL_GROUPS"] ? true : false
-      testflight(
-        app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
-        changelog: changelog,
-        distribute_external: is_distribute_external,
-        groups: ENV["AUTO_DISTRIBUTE_EXTERNAL_GROUPS"]
-      )
+        distribute_method = options[:distribute_method]
+        if distribute_method = "Firebase"
+            firebase_app_distribution(
+                app: "1:315610729143:ios:d11f312f0dd257bcc25b32",
+                release_notes: get_changelog,
+                testers: ENV["FIREBASE_TESTERS"],
+                debug: !is_ci
+            )
+        else
+            is_distribute_external = ENV["EXTERNAL_GROUPS"] ? true : false
+            testflight(
+                app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+                changelog: changelog,
+                distribute_external: is_distribute_external,
+                groups: ENV["AUTO_DISTRIBUTE_EXTERNAL_GROUPS"]
+            )
+        end
     end
 end
 
