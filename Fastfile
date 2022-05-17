@@ -106,26 +106,34 @@ lane :bump_build_number do |options|
         if app_identifier_alpha == nil
             app_identifier_alpha = "#{ENV["BUNDLE_ID"]}.alpha"
         end
-        testflight_build_number = latest_testflight_build_number(
-            app_identifier: app_identifier_alpha,
-            version: version,
-            initial_build_number: 0
-        )
-        if testflight_build_number > build_number then
-            build_number = testflight_build_number.to_i
+
+        begin
+            testflight_build_number = latest_testflight_build_number(
+                app_identifier: app_identifier_alpha,
+                version: version,
+                initial_build_number: 0
+            )
+            if testflight_build_number > build_number then
+                build_number = testflight_build_number.to_i
+            end
+        rescue
+            puts('not testflight')
         end
 
-        # check appstore latest build number
-        appstore_build_number = app_store_build_number(
-            live: false,
-            version: version,
-            app_identifier: ENV["BUNDLE_ID"],
-            initial_build_number: 0
-        )
-        if appstore_build_number > build_number then
-            build_number = appstore_build_number
+        begin
+            # check appstore latest build number
+            appstore_build_number = app_store_build_number(
+                live: false,
+                version: version,
+                app_identifier: ENV["BUNDLE_ID"],
+                initial_build_number: 0
+            )
+            if appstore_build_number > build_number then
+                build_number = appstore_build_number
+            end
+        rescue
+            puts('not appstore app')
         end
-
         build_number = build_number + 1
     end
 
