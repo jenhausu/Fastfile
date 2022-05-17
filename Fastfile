@@ -228,7 +228,7 @@ lane :adhoc do
     changelog = get_changelog
     changelog_update
 
-    message = "Successfully deliver a new version to Firebase! (ﾉ>ω<)ﾉ ✈️"
+    message = "Successfully deliver a new version to Firebase! (ﾉ>ω<)ﾉ"
     if ENV["ALPHA_RELEASE_MESSAGE"]
       message = ENV["ALPHA_RELEASE_MESSAGE"]
     end
