@@ -595,13 +595,18 @@ lane :add_device do
     UI.success "[fastlane] Automatically add device, Name: #{device_name}, Identifier: #{device_id}."
 end
 
-lane :generate_badge_icon do |options|
+lane :generate_badge_icon do
 #   uncomment next line if not install imagemagick yet
 #   sh("brew install imagemagick")
-  add_badge(
-    custom: "./fastlane/badge/#{options[:image]}.png",
-    glob: "/**/#{ENV["PROJECT_NAME"]}/Assets.xcassets/AppIcon.appiconset/*.{png,PNG}"
-  )
+    fastlane_require "tty-prompt"
+
+    prompt = TTY::Prompt.new
+    image = prompt.ask("image: ", required: true)
+
+    add_badge(
+        custom: "./fastlane/badge/#{image}.png",
+        glob: "/**/#{ENV["PROJECT_NAME"]}/Assets.xcassets/AppIcon.appiconset/*.{png,PNG}"
+    )
 end
 
 def git_push
