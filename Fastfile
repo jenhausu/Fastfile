@@ -581,6 +581,7 @@ end
 
 desc "Register new device."
 lane :add_device do
+    fastlane_require "tty-prompt"
     prompt = TTY::Prompt.new
 
     device_name = prompt.ask("Device Name: ", required: true)
