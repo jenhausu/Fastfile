@@ -409,7 +409,7 @@ lane :upload_api do |options|
         sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
         distribute_method = options[:distribute_method]
-        if distribute_method = "Firebase"
+        if distribute_method == "Firebase"
             firebase_app_distribution(
                 app: "1:315610729143:ios:d11f312f0dd257bcc25b32",
                 release_notes: get_changelog,
