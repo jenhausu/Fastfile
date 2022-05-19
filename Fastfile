@@ -602,8 +602,11 @@ lane :generate_badge_icon do
     fastlane_require "tty-prompt"
 
     prompt = TTY::Prompt.new
-    image = prompt.ask("image: ", required: true)
-    icon = prompt.ask("icon: ", required: true)
+    icon = prompt.ask("icon:", required: true)
+    image = prompt.ask("image:", required: false)
+    if image == nil
+        image = icon
+    end
 
     add_badge(
         custom: "./fastlane/badge/#{image}.png",
