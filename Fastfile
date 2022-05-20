@@ -375,6 +375,9 @@ lane :upload_api do |options|
     changelog = get_changelog
 
     if ENV["FASTLANE_LANE_NAME"] == "release"
+        if !File.exists?("./metadata/zh-Hant/release_notes.txt")
+            sh("mkdir -p ./metadata/zh-Hant/ && touch ./metadata/zh-Hant/release_notes.txt")
+        end
         sh("echo \"#{changelog}\" > ./metadata/zh-Hant/release_notes.txt")
 
         deliver(
