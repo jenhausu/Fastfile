@@ -209,7 +209,7 @@ lane :alpha do
       message = ENV["ALPHA_RELEASE_MESSAGE"]
     end
 
-    if changelog != nil
+    if changelog != ""
         pretext = "此版更新內容：\n#{changelog}"
     else
         last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
