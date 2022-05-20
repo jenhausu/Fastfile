@@ -211,9 +211,6 @@ lane :alpha do
 
     if changelog != ""
         pretext = "此版更新內容：\n#{changelog}"
-    else
-        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
 
     slack_message(message, pretext, "product_manager", true)
@@ -235,9 +232,6 @@ lane :adhoc do
 
     if changelog != ""
         pretext = "此版更新內容：\n#{changelog}"
-    else
-        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
 
     slack_message(message, pretext, "product_manager", true)
@@ -252,9 +246,6 @@ lane :beta do
     changelog = get_changelog
     if changelog != ""
         pretext = "此版更新內容：\n#{changelog}"
-    else
-        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
     changelog_update
     slack_message("TestFlight 上有新的 beta 版本", pretext, "product_manager", true)
@@ -271,9 +262,6 @@ lane :alpha_beta do
     changelog = get_changelog
     if changelog != ""
         pretext = "此版更新內容：\n#{changelog}"
-    else
-        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
     changelog_update
     slack_message("TestFlight 上有新的 Alpha, Beta 版本", pretext, "product_manager", true)
@@ -292,9 +280,6 @@ lane :alpha_beta_release do
     changelog = get_changelog
     if changelog != ""
         pretext = "此版更新內容：\n#{changelog}"
-    else
-        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
     changelog_update
     slack_message("TestFlight 上有新的 Alpha, Beta, Release 版本", pretext, "product_manager", true)
@@ -309,9 +294,6 @@ lane :release do
     changelog = get_changelog
     if changelog != nil
         pretext = "此版更新內容：\n#{changelog}"
-    else
-        last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
-        pretext = sh("git log --oneline #{last_archive_commit_hash}...")
     end
     changelog_update
     current_version = get_version_number(target: ENV["TARGET_NAME"])
