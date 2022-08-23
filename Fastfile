@@ -31,7 +31,7 @@ before_all do |lane, options|
     end
 
     begin
-        # better way to access environment variable
+        # better way to access bool environment variable
         ENVied.require
     rescue
         sh("touch Envfile")
