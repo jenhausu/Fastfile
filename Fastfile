@@ -183,6 +183,10 @@ lane :bump_version do |options|
         increment_version_number(
             version_number: options[:version]
         )
+        # in order to change market version
+        increment_version_number_in_xcodeproj(
+            version_number: options[:version]
+        )
         increment_build_number(
             build_number: "0"
         )
@@ -201,6 +205,11 @@ lane :bump_version do |options|
 
         increment_version_number(
             bump_type: type
+        )
+        # in order to change market version
+        increment_version_number_in_xcodeproj(
+            bump_type: type,
+            target: ENV["TARGET_NAME"]
         )
         increment_build_number(
             build_number: "0"
