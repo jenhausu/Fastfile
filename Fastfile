@@ -426,6 +426,7 @@ lane :upload_api do |options|
             submit_for_review: true,
             phased_release: true,
             skip_screenshots: true,
+            precheck_include_in_app_purchases: false,
             force: true  # Skip the HTML report file verification
         )
 
