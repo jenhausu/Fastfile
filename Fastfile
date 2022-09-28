@@ -48,8 +48,10 @@ def setupEnv(key, description, required = true)
         prompt = TTY::Prompt.new
 
         value = prompt.ask("#{description}:", required: required)
-        ENV[key] = value
-        sh("echo '#{key}=#{value}' >> .env")
+        if value != nil
+            ENV[key] = value
+            sh("echo '#{key}=#{value}' >> .env")
+        end
     end
 end
 
