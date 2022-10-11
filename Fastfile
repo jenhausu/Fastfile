@@ -4,7 +4,6 @@ default_platform(:ios)
 
 ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
 ENV["NOT_WORK_ON_CI"] = "false"
-ENV["USE_AUTO_SIGN"] = "false"
 
 before_all do |lane, options|
     if options[:fake_lane] != nil
@@ -86,7 +85,8 @@ lane :build do
         next
     end
     setupEnv("SCHEME_DEV", "development scheme")
-    
+    setupEnv("USE_AUTO_SIGN", "use auto sign", false)
+
     match(readonly: true) unless ENVied.USE_AUTO_SIGN
     install_library
     gym(
@@ -401,6 +401,8 @@ lane :carthage_update do |options|
 end
 
 def archive(scheme, method = "app-store")
+    setupEnv("USE_AUTO_SIGN", "use auto sign", false)
+
     match(readonly: true) if is_ci unless ENVied.USE_AUTO_SIGN
     install_library if is_ci
     gym(
@@ -543,7 +545,8 @@ lane :screenshots do |options|
     setupEnv("SNAPSHOT_BUNDLE_ID", "snapshot bundle id")
     setupEnv("SNAPSHOT_PATH", "snapshot path")
     setupEnv("BUNDLE_ID", "bundle id")
-
+    setupEnv("USE_AUTO_SIGN", "use auto sign", false)
+    
     match(
         app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
         type: "development",
