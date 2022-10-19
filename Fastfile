@@ -400,11 +400,29 @@ def archive(scheme, method = "app-store")
 
     match(readonly: true) if is_ci unless ENVied.USE_AUTO_SIGN
     install_library if is_ci
+
+    if method == "development" 
+        export_method = "Development"
+    elsif method == "ad-hoc"
+        export_method = "AdHoc"
+    elsif method == "app-store"
+        export_mothod = "AppStore"
+    elsif method == "enterprise"
+        export_method = "Enterprise"
+    end
+
     gym(
         scheme: scheme,
         export_method: method,
         cloned_source_packages_path: "Packages",
-        silent: true
+        silent: true,
+        export_options: {
+            provisioningProfiles: {
+                "#{ENV["BUNDLE_ID"]}.alpha" => "match #{export_method} #{ENV["BUNDLE_ID"]}.alpha",
+                ENV["BUNDLE_ID"] => "match #{export_method} #{ENV["BUNDLE_ID"]}"
+            }
+        }
+        
     )
 end
 
