@@ -118,7 +118,6 @@ desc "Bump build number."
 lane :bump_build_number do |options|
     setupEnv("TARGET_NAME", "target name")
     setupEnv("BUNDLE_ID", "bundle id")
-    setupEnv("BUNDLE_ID_ALPHA", "alpha bundle id", false)
     setupEnv("PROJECT_NAME", "project name")
 
     build_number = get_build_number.to_i
@@ -128,14 +127,10 @@ lane :bump_build_number do |options|
     else
         # check testflight latest build number
         version = get_version_number(target: ENV["TARGET_NAME"])
-        app_identifier_alpha = ENV["BUNDLE_ID_ALPHA"]
-        if app_identifier_alpha == nil
-            app_identifier_alpha = "#{ENV["BUNDLE_ID"]}.alpha"
-        end
 
         begin
             testflight_build_number = latest_testflight_build_number(
-                app_identifier: app_identifier_alpha,
+                app_identifier: "#{ENV["BUNDLE_ID"]}.alpha",
                 version: version,
                 initial_build_number: 0
             )
