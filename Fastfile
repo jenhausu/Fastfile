@@ -406,7 +406,7 @@ def archive(scheme, method = "app-store")
     elsif method == "ad-hoc"
         export_method = "AdHoc"
     elsif method == "app-store"
-        export_mothod = "AppStore"
+        export_method = "AppStore"
     elsif method == "enterprise"
         export_method = "Enterprise"
     end
