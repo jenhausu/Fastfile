@@ -355,8 +355,8 @@ end
 
 def have_new_commit
     last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
-    new_commit = sh("git log --oneline #{last_archive_commit_hash}...")
-    new_commit != "" ? true : false
+    new_commit = sh("git log #{last_archive_commit_hash}... --oneline --format=%s")
+    new_commit != "docs[changelog]: update\n" ? true : false
 end
 
 lane :install_library do
