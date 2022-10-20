@@ -660,13 +660,9 @@ lane :generate_badge_icon do
 
     prompt = TTY::Prompt.new
     icon = prompt.ask("icon:", required: true)
-    image = prompt.ask("image:", required: false)
-    if image == nil
-        image = icon
-    end
-
+    
     add_badge(
-        custom: "./fastlane/badge/#{image}.png",
+        custom: "./fastlane/badge/#{icon}.png",
         glob: "/**/#{ENV["PROJECT_NAME"]}/Assets.xcassets/AppIcon-#{icon}.appiconset/*.{png,PNG}"
     )
 end
