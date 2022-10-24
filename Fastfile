@@ -42,7 +42,9 @@ before_all do |lane, options|
 end
 
 def setupEnv(key, description, required = true)
-    unless is_ci then return end
+    if is_ci
+        return
+    end
 
     if ENV[key] == nil
         fastlane_require "tty-prompt"
