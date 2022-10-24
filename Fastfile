@@ -738,20 +738,28 @@ def slack_message(title, message = nil, inform_level, success)
     end
 
     fields = []
-    commit = last_git_commit
-    fields = fields.push({ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true }) if inform_level == "developer"
-    fields = fields.push({ "title": "Branch", "value": git_branch, "short": true }) if inform_level == "developer"
-    fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": false }) if inform_level == "developer"
-    fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true }) if inform_level == "developer"
-    fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true }) if inform_level == "developer"
+
+    if inform_level == "developer"
+        commit = last_git_commit
+
+        fields = fields.push({ "title": "Lane", "value": ENV["FASTLANE_LANE_NAME"], "short": true })
+        fields = fields.push({ "title": "Branch", "value": git_branch, "short": true })
+        fields = fields.push({ "title": "Git Message", "value": commit[:message], "short": false })
+        fields = fields.push({ "title": "Git Author", "value": commit[:author], "short": true })
+        fields = fields.push({ "title": "Git Hash", "value": commit[:abbreviated_commit_hash], "short": true })
+    end
 
     fields = fields.push({ "title": "Version", "value": get_version_number(target: ENV["TARGET_NAME"]), "short": true })
     fields = fields.push({ "title": "Build Number", "value": get_build_number, "short": true })
 
-    build_by = is_ci ? ENV["CI_NAME"] : sh(command: "git config user.name")
-    fields = fields.push({ "title": "Built by", "value": build_by }) if inform_level == "developer"
+    if inform_level == "developer"
+        build_by = is_ci ? ENV["CI_NAME"] : sh(command: "git config user.name")
+        fields = fields.push({ "title": "Built by", "value": build_by })
 
-    fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" }) if is_ci && inform_level == "developer"
+        if is_ci && ENV["CI_NAME"] == "Github Actions"
+            fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" })
+        end
+    end
 
     # 不使用 slack 的 message 欄位，自製 title、message 的邏輯。
     # 如果 title、message 都有值，把 title 加粗體
