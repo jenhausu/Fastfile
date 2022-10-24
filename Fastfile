@@ -646,7 +646,7 @@ lane :submit_for_review do
         force: is_ci  # Skip the HTML report file verification
     )
 
-    slack_message("iOS 最新版本送審成功", "product_manager", true)
+    slack_message("iOS 最新版本送審了", "product_manager", true)
 end
 
 # Others
