@@ -6,6 +6,7 @@ ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
 ENV["NOT_WORK_ON_CI"] = "false"
 
 before_all do |lane, options|
+    # 如果測試時想要注入假的 FASTLANE_LANE_NAME，可以透過設定 fake_lane 注入
     if options[:fake_lane] != nil
         ENV["FASTLANE_LANE_NAME"] = options[:fake_lane]
     end
@@ -124,6 +125,7 @@ lane :bump_build_number do |options|
 
     build_number = get_build_number.to_i
 
+    # 直接設定指定的數字
     if options[:number]
         build_number = options[:number]
     else
@@ -180,6 +182,7 @@ lane :bump_version do |options|
     setupEnv("TARGET_NAME", "target name")
     setupEnv("PROJECT_NAME", "project name")
 
+    # 直接設定指定的數字
     if options[:version]
         increment_version_number(
             version_number: options[:version]
@@ -337,6 +340,7 @@ lane :release do
     slack_message("Submit version #{current_version} to App review.", pretext, "product_manager", true)
 end
 
+desc "給 CI 跑的 lane"
 lane :daily_archive do
     if ENVied.NOT_WORK_ON_CI
         next
@@ -349,16 +353,24 @@ lane :daily_archive do
     end
 end
 
+# 檢查從上一個版本到現在有沒有新的 feat 或 fix commit，用於 daily_archive 決定要不要打包一版新的
 private_lane :have_new_feature do
     last_archive_commit_hash = sh('git log -1 --grep "version\[build\]:" --format=%h | tr -d "\n"')
     new_faeture = sh("git log --oneline --grep 'feat:' --grep 'fix:' #{last_archive_commit_hash}...")
     new_faeture != "" ? true : false
 end
 
+# 檢查從上一次 archive 到現在有沒有任何新的 commit，一般用於 archive 前檢查要不要更新版號
 def have_new_commit
     last_archive_commit_hash = sh('git log -1 --grep "version" --format=%h | tr -d "\n"')
     new_commit = sh("git log #{last_archive_commit_hash}... --oneline --format=%s")
-    new_commit != "docs[changelog]: update\n" ? true : false
+
+    # 因為 archive 後面會接著更新 changelog 的 commit
+    if new_commit == "docs[changelog]: update\n" || new_commit == ""
+        return false
+    else
+        return true
+    end
 end
 
 lane :install_library do
@@ -593,6 +605,7 @@ lane :screenshots do |options|
     slack_message("螢幕截圖成功", "product_manager", true)
 end
 
+desc "單純上傳 screenshot。一般用於前面的 screenshots 發生一些錯誤導致整個 lane 就結束了，但其實還是有部分 screenshot 是成功的"
 lane :update_snapshot do
     setupEnv("BUNDLE_ID", "bundle id")
     setupEnv("SNAPSHOT_PATH", "snapshot path")
@@ -615,6 +628,7 @@ lane :update_meta_data do
     )
 end
 
+desc "submit app for review, save time for opening iTunesConnect web page."
 lane :submit_for_review do
     deliver(
         submission_information: {
@@ -714,9 +728,10 @@ def slack_message(title, message = nil, inform_level, success)
     if ENV["DEBUG_MODE"] == "true"
       inform_level = "developer"
     end
-    if inform_level == "product_manager"
+
+    if inform_level == "product_manager" # 要讓 PM 或是公司其他非工程人員知道的訊息
         slack_webhook_url = ENV["SLACK_PRODUCTMANAGER_WEBHOOK_URL"]
-    elsif inform_level == "developer"
+    elsif inform_level == "developer" # 只有工程師才需要知道的訊息
         slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
     else
         slack_webhook_url = ENV["SLACK_DEVELOPER_WEBHOOK_URL"]
@@ -738,6 +753,8 @@ def slack_message(title, message = nil, inform_level, success)
 
     fields = fields.push({ "title" => "Run Page", "value" => "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/actions/runs/#{ENV["RUN_ID"]}" }) if is_ci && inform_level == "developer"
 
+    # 不使用 slack 的 message 欄位，自製 title、message 的邏輯。
+    # 如果 title、message 都有值，把 title 加粗體
     if message
       pretext = "*#{title}*\n#{message}"
     else
