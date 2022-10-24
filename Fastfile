@@ -724,6 +724,7 @@ end
 def slack_message(title, message = nil, inform_level, success)
     setupEnv("SLACK_PRODUCTMANAGER_WEBHOOK_URL", "slack product manager webhook url")
     setupEnv("SLACK_DEVELOPER_WEBHOOK_URL", "slack developer webhook url")
+    setupEnv("DEBUG_MODE", "debug mode(true or false)", false)
 
     if ENV["DEBUG_MODE"] == "true"
       inform_level = "developer"
