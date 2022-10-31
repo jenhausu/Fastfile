@@ -88,8 +88,7 @@ lane :build do
         next
     end
     setupEnv("SCHEME_DEV", "development scheme")
-    setupEnv("USE_AUTO_SIGN", "use auto sign", false)
-
+    
     match(readonly: true) unless ENVied.USE_AUTO_SIGN
     install_library
     gym(
@@ -410,8 +409,6 @@ lane :carthage_update do |options|
 end
 
 def archive(scheme, method = "app-store")
-    setupEnv("USE_AUTO_SIGN", "use auto sign", false)
-
     match(readonly: true) if is_ci unless ENVied.USE_AUTO_SIGN
     install_library if is_ci
 
@@ -572,8 +569,7 @@ lane :screenshots do |options|
     setupEnv("SNAPSHOT_BUNDLE_ID", "snapshot bundle id")
     setupEnv("SNAPSHOT_PATH", "snapshot path")
     setupEnv("BUNDLE_ID", "bundle id")
-    setupEnv("USE_AUTO_SIGN", "use auto sign", false)
-    
+        
     match(
         app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
         type: "development",
@@ -724,7 +720,6 @@ end
 def slack_message(title, message = nil, inform_level, success)
     setupEnv("SLACK_PRODUCTMANAGER_WEBHOOK_URL", "slack product manager webhook url")
     setupEnv("SLACK_DEVELOPER_WEBHOOK_URL", "slack developer webhook url")
-    setupEnv("DEBUG_MODE", "debug mode(true or false)", false)
 
     if ENV["DEBUG_MODE"] == "true"
       inform_level = "developer"
