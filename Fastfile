@@ -97,7 +97,7 @@ lane :build do
         next
     end
     setupEnvIfNeeded("SCHEME_DEV", "development scheme")
-    
+
     match(readonly: true) unless ENVied.USE_AUTO_SIGN
     install_library
     gym(
@@ -464,17 +464,8 @@ lane :upload_api do |options|
         sh("git checkout ./metadata/zh-Hant/release_notes.txt")
     else
         distribute_method = options[:distribute_method]
-        if distribute_method == "Firebase"
-            setupEnvIfNeeded("FIREBASE_APP_ID", "firebase app id")
-            setupEnvIfNeeded("FIREBASE_TESTERS", "firebase testers")
 
-            firebase_app_distribution(
-                app: ENV["FIREBASE_APP_ID"],
-                release_notes: get_changelog,
-                testers: ENV["FIREBASE_TESTERS"],
-                debug: !is_ci
-            )
-        else
+        if distribute_method == "TestFlight"
             setupEnvIfNeeded("EXTERNAL_GROUPS", "external groups", false)
 
             is_distribute_external = ENV["EXTERNAL_GROUPS"] ? true : false
@@ -484,6 +475,16 @@ lane :upload_api do |options|
                 distribute_external: is_distribute_external,
                 groups: ENV["EXTERNAL_GROUPS"],
                 notify_external_testers: is_distribute_external
+            )
+        elsif distribute_method == "Firebase"
+            setupEnvIfNeeded("FIREBASE_APP_ID", "firebase app id")
+            setupEnvIfNeeded("FIREBASE_TESTERS", "firebase testers")
+
+            firebase_app_distribution(
+                app: ENV["FIREBASE_APP_ID"],
+                release_notes: get_changelog,
+                testers: ENV["FIREBASE_TESTERS"],
+                debug: !is_ci
             )
         end
     end
