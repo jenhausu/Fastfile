@@ -34,7 +34,16 @@ before_all do |lane, options|
         # better way to access bool environment variable
         ENVied.require
     rescue
-        sh("touch Envfile")
+        if File.exists?("Envfile")
+            setupEnvIfNeeded("RUN_ON_LOCAL", "are you run fastlane on local(true or false)")
+            setupEnvIfNeeded("USE_AUTO_SIGN", "are you using auto sing for cer(true or false)")
+            setupEnvIfNeeded("USE_SENTRY", "are you using sentry(true or false)")
+        else
+            sh("touch Envfile")
+            sh("echo 'variable :RUN_ON_LOCAL, :boolean' >> Envfile")
+            sh("echo 'variable :USE_AUTO_SIGN, :boolean' >> Envfile")
+            sh("echo 'variable :USE_SENTRY, :boolean' >> Envfile")
+        end
     end
 
     unless is_ci
@@ -87,8 +96,8 @@ lane :build do
     if ENVied.RUN_ON_LOCAL
         next
     end
-    
     setupEnvIfNeeded("SCHEME_DEV", "development scheme")
+    
     match(readonly: true) unless ENVied.USE_AUTO_SIGN
     install_library
     gym(
