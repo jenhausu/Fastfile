@@ -245,13 +245,15 @@ end
 # options 
 # distribute_method: Firebase, TestFlight
 lane :alpha do |options|
+    distribute_method = options[:distribute_method]
+    if distribute_method == nil
+        distribute_method = "TestFlight"
+    end
+
     if have_new_commit
         bump_build_number
     end
 
-    if options[:distribute_method] == nil 
-        distribute_method = "TestFlight"
-    end
     archive("Alpha", distribute_method)
     upload_api(distribute_method: distribute_method)
     changelog = get_changelog
