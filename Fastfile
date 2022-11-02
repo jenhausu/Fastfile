@@ -3,7 +3,7 @@ require 'envied'
 default_platform(:ios)
 
 ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
-ENV["NOT_WORK_ON_CI"] = "false"
+ENV["RUN_ON_LOCAL"] = "false"
 
 before_all do |lane, options|
     # 如果測試時想要注入假的 FASTLANE_LANE_NAME，可以透過設定 fake_lane 注入
@@ -84,7 +84,7 @@ end
 
 desc "Build the project."
 lane :build do
-    if ENVied.NOT_WORK_ON_CI
+    if ENVied.RUN_ON_LOCAL
         next
     end
     
@@ -341,7 +341,7 @@ end
 
 desc "給 CI 跑的 lane"
 lane :daily_archive do
-    if ENVied.NOT_WORK_ON_CI
+    if ENVied.RUN_ON_LOCAL
         next
     end
     
