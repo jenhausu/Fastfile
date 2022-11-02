@@ -242,37 +242,22 @@ end
 
 # Archive
 
-lane :alpha do
+# options 
+# distribute_method: Firebase, TestFlight
+lane :alpha do |options|
     if have_new_commit
         bump_build_number
     end
-    archive("Alpha")
-    upload_api
+
+    if options[:distribute_method] == nil 
+        distribute_method = "TestFlight"
+    end
+    archive("Alpha", distribute_method)
+    upload_api(distribute_method: distribute_method)
     changelog = get_changelog
     changelog_update
 
-    message = "✈️ Successfully deliver a new alpha version to TestFlight! (ﾉ>ω<)ﾉ ✈️"
-    if ENV["ALPHA_RELEASE_MESSAGE"]
-      message = ENV["ALPHA_RELEASE_MESSAGE"]
-    end
-
-    if changelog != ""
-        pretext = "此版更新內容：\n#{changelog}"
-    end
-
-    slack_message(message, pretext, "product_manager", true)
-end
-
-lane :adhoc do
-    if have_new_commit
-        bump_build_number
-    end
-    archive("Alpha", "ad-hoc")
-    upload_api(distribute_method: "Firebase")
-    changelog = get_changelog
-    changelog_update
-
-    message = "Successfully deliver a new version to Firebase! (ﾉ>ω<)ﾉ"
+    message = "✈️ Successfully deliver a new alpha version to #{distribute_method}! (ﾉ>ω<)ﾉ ✈️"
     if ENV["ALPHA_RELEASE_MESSAGE"]
       message = ENV["ALPHA_RELEASE_MESSAGE"]
     end
@@ -418,29 +403,37 @@ lane :carthage_update do |options|
     )
 end
 
-def archive(scheme, method = "app-store")
+def archive(scheme, distribute_method = "TestFlight")
     match(readonly: true) if is_ci unless ENVied.USE_AUTO_SIGN
     install_library if is_ci
 
-    if method == "development" 
-        export_method = "Development"
-    elsif method == "ad-hoc"
-        export_method = "AdHoc"
-    elsif method == "app-store"
-        export_method = "AppStore"
-    elsif method == "enterprise"
-        export_method = "Enterprise"
+    if distribute_method == "TestFlight"
+        export_method = "app-store"
+        provision_profile_export_method = "AppStore"
+    elsif distribute_method == "Firebase"
+        export_method = "ad-hoc"
+        provision_profile_export_method = "AdHoc"
+    end
+
+    if scheme == "Alpha"
+        bundle_id = "#{ENV["BUNDLE_ID"]}.alpha"
+        provision_profile_name = "match #{export_method} #{ENV["BUNDLE_ID"]}.alpha",
+    elsif scheme == "Beta"
+        bundle_id = "#{ENV["BUNDLE_ID"]}.beta"
+        provision_profile_name = "match #{export_method} #{ENV["BUNDLE_ID"]}.beta",
+    elsif scheme == "Release"
+        bundle_id = ENV["BUNDLE_ID"]
+        provision_profile_name = "match #{export_method} #{ENV["BUNDLE_ID"]}",
     end
 
     gym(
         scheme: scheme,
-        export_method: method,
+        export_method: export_method,
         cloned_source_packages_path: "Packages",
         silent: true,
         export_options: {
             provisioningProfiles: {
-                "#{ENV["BUNDLE_ID"]}.alpha" => "match #{export_method} #{ENV["BUNDLE_ID"]}.alpha",
-                ENV["BUNDLE_ID"] => "match #{export_method} #{ENV["BUNDLE_ID"]}"
+                bundle_id => provision_profile_name
             }
         }
     )
