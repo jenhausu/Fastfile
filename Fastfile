@@ -419,13 +419,13 @@ def archive(scheme, distribute_method = "TestFlight")
 
     if scheme == "Alpha"
         bundle_id = "#{ENV["BUNDLE_ID"]}.alpha"
-        provision_profile_name = "match #{export_method} #{ENV["BUNDLE_ID"]}.alpha"
+        provision_profile_name = "match #{provision_profile_export_method} #{ENV["BUNDLE_ID"]}.alpha"
     elsif scheme == "Beta"
         bundle_id = "#{ENV["BUNDLE_ID"]}.beta"
-        provision_profile_name = "match #{export_method} #{ENV["BUNDLE_ID"]}.beta"
+        provision_profile_name = "match #{provision_profile_export_method} #{ENV["BUNDLE_ID"]}.beta"
     elsif scheme == "Release"
         bundle_id = ENV["BUNDLE_ID"]
-        provision_profile_name = "match #{export_method} #{ENV["BUNDLE_ID"]}"
+        provision_profile_name = "match #{provision_profile_export_method} #{ENV["BUNDLE_ID"]}"
     end
 
     gym(
