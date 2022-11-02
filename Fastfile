@@ -106,6 +106,7 @@ lane :build do
         cloned_source_packages_path: "Packages",
         silent: true
     )
+    upload_dsym
     slack_message("Build Successfully", "developer", true)
 end
 
@@ -442,8 +443,8 @@ def archive(scheme, method = "app-store")
                 ENV["BUNDLE_ID"] => "match #{export_method} #{ENV["BUNDLE_ID"]}"
             }
         }
-        
     )
+    upload_dsym
 end
 
 lane :upload_api do |options|
@@ -492,6 +493,20 @@ lane :upload_api do |options|
                 notify_external_testers: is_distribute_external
             )
         end
+    end
+end
+
+def upload_dsym
+    if ENVied.USE_SENTRY
+        setupEnvIfNeeded("SENTRY_AUTH_TOKEN", "sentry auth token")
+        setupEnvIfNeeded("SENTRY_ORG", "organization")
+        setupEnvIfNeeded("SENTRY_PROJECT", "project")
+
+        sentry_upload_dsym(
+            auth_token: ENV["SENTRY_AUTH_TOKEN"],
+            org_slug: ENV["SENTRY_ORG"],
+            project_slug: ENV["SENTRY_PROJECT"],
+        )
     end
 end
 
