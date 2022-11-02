@@ -13,9 +13,9 @@ before_all do |lane, options|
     setup_ci
 
     begin
-        setupEnv("APP_STORE_CONNECT_API_ISSUER_ID", "app store connet api issuer id", false)
-        setupEnv("APP_STORE_CONNECT_API_KEY_ID", "app store connect api key id", false)
-        setupEnv("APP_STORE_CONNECT_API_P8_FILEPATH", "app store connect api p8 filepath(./fastlane/AuthKey_XX2294X7XX.p8)", false)
+        setupEnvIfNeeded("APP_STORE_CONNECT_API_ISSUER_ID", "app store connet api issuer id", false)
+        setupEnvIfNeeded("APP_STORE_CONNECT_API_KEY_ID", "app store connect api key id", false)
+        setupEnvIfNeeded("APP_STORE_CONNECT_API_P8_FILEPATH", "app store connect api p8 filepath(./fastlane/AuthKey_XX2294X7XX.p8)", false)
 
         ensure_env_vars(
             env_vars: ['APP_STORE_CONNECT_API_KEY_ID', 'APP_STORE_CONNECT_API_ISSUER_ID', 'APP_STORE_CONNECT_API_P8_FILEPATH']
@@ -42,7 +42,7 @@ before_all do |lane, options|
     end
 end
 
-def setupEnv(key, description, required = true)
+def setupEnvIfNeeded(key, description, required = true)
     if is_ci
         return
     end
@@ -63,8 +63,8 @@ desc "Create a new app on iTunesconnect."
 lane :create_new_app do
     fastlane_require "tty-prompt"
     prompt = TTY::Prompt.new
-    setupEnv("BUNDLE_ID", "bundle id")
-    setupEnv("PROJECT_NAME", "project name")
+    setupEnvIfNeeded("BUNDLE_ID", "bundle id")
+    setupEnvIfNeeded("PROJECT_NAME", "project name")
 
     app_identifier = ENV["BUNDLE_ID"]
     if ENV["BUNDLE_ID"] == nil
@@ -87,8 +87,8 @@ lane :build do
     if ENVied.NOT_WORK_ON_CI
         next
     end
-    setupEnv("SCHEME_DEV", "development scheme")
     
+    setupEnvIfNeeded("SCHEME_DEV", "development scheme")
     match(readonly: true) unless ENVied.USE_AUTO_SIGN
     install_library
     gym(
@@ -102,7 +102,7 @@ end
 
 desc "Run unit test."
 lane :unit_test do |options|
-    setupEnv("SCHEME_TEST", "test scheme")
+    setupEnvIfNeeded("SCHEME_TEST", "test scheme")
 
     install_library
     scan(
@@ -118,9 +118,9 @@ end
 
 desc "Bump build number."
 lane :bump_build_number do |options|
-    setupEnv("TARGET_NAME", "target name")
-    setupEnv("BUNDLE_ID", "bundle id")
-    setupEnv("PROJECT_NAME", "project name")
+    setupEnvIfNeeded("TARGET_NAME", "target name")
+    setupEnvIfNeeded("BUNDLE_ID", "bundle id")
+    setupEnvIfNeeded("PROJECT_NAME", "project name")
 
     build_number = get_build_number.to_i
 
@@ -178,8 +178,8 @@ end
 
 desc "Bump version with interactive command line mode."
 lane :bump_version do |options|
-    setupEnv("TARGET_NAME", "target name")
-    setupEnv("PROJECT_NAME", "project name")
+    setupEnvIfNeeded("TARGET_NAME", "target name")
+    setupEnvIfNeeded("PROJECT_NAME", "project name")
 
     # 直接設定指定的數字
     if options[:version]
@@ -323,7 +323,7 @@ lane :alpha_beta_release do
 end
 
 lane :release do
-    setupEnv("TARGET_NAME", "target name")
+    setupEnvIfNeeded("TARGET_NAME", "target name")
 
     if have_new_commit
         bump_build_number
@@ -462,8 +462,8 @@ lane :upload_api do |options|
     else
         distribute_method = options[:distribute_method]
         if distribute_method == "Firebase"
-            setupEnv("FIREBASE_APP_ID", "firebase app id")
-            setupEnv("FIREBASE_TESTERS", "firebase testers")
+            setupEnvIfNeeded("FIREBASE_APP_ID", "firebase app id")
+            setupEnvIfNeeded("FIREBASE_TESTERS", "firebase testers")
 
             firebase_app_distribution(
                 app: ENV["FIREBASE_APP_ID"],
@@ -472,7 +472,7 @@ lane :upload_api do |options|
                 debug: !is_ci
             )
         else
-            setupEnv("EXTERNAL_GROUPS", "external groups", false)
+            setupEnvIfNeeded("EXTERNAL_GROUPS", "external groups", false)
 
             is_distribute_external = ENV["EXTERNAL_GROUPS"] ? true : false
             testflight(
@@ -566,9 +566,9 @@ end
 
 desc "Take screenshots and upload."
 lane :screenshots do |options|
-    setupEnv("SNAPSHOT_BUNDLE_ID", "snapshot bundle id")
-    setupEnv("SNAPSHOT_PATH", "snapshot path")
-    setupEnv("BUNDLE_ID", "bundle id")
+    setupEnvIfNeeded("SNAPSHOT_BUNDLE_ID", "snapshot bundle id")
+    setupEnvIfNeeded("SNAPSHOT_PATH", "snapshot path")
+    setupEnvIfNeeded("BUNDLE_ID", "bundle id")
         
     match(
         app_identifier: ENV["SNAPSHOT_BUNDLE_ID"],
@@ -603,8 +603,8 @@ end
 
 desc "單純上傳 screenshot。一般用於前面的 screenshots 發生一些錯誤導致整個 lane 就結束了，但其實還是有部分 screenshot 是成功的"
 lane :update_snapshot do
-    setupEnv("BUNDLE_ID", "bundle id")
-    setupEnv("SNAPSHOT_PATH", "snapshot path")
+    setupEnvIfNeeded("BUNDLE_ID", "bundle id")
+    setupEnvIfNeeded("SNAPSHOT_PATH", "snapshot path")
 
     deliver(
         app_identifier: ENV["BUNDLE_ID"],
@@ -668,7 +668,7 @@ lane :generate_badge_icon do
 #   uncomment next line if not install imagemagick yet
 #   sh("brew install imagemagick")
     fastlane_require "tty-prompt"
-    setupEnv("PROJECT_NAME", "project name")
+    setupEnvIfNeeded("PROJECT_NAME", "project name")
 
     prompt = TTY::Prompt.new
     icon = prompt.ask("icon:", required: true)
@@ -718,8 +718,8 @@ lane :send_notification do |options|
 end
 
 def slack_message(title, message = nil, inform_level, success)
-    setupEnv("SLACK_PRODUCTMANAGER_WEBHOOK_URL", "slack product manager webhook url")
-    setupEnv("SLACK_DEVELOPER_WEBHOOK_URL", "slack developer webhook url")
+    setupEnvIfNeeded("SLACK_PRODUCTMANAGER_WEBHOOK_URL", "slack product manager webhook url")
+    setupEnvIfNeeded("SLACK_DEVELOPER_WEBHOOK_URL", "slack developer webhook url")
 
     if ENV["DEBUG_MODE"] == "true"
       inform_level = "developer"
