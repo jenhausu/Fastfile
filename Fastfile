@@ -453,7 +453,8 @@ lane :upload_api do |options|
 
         deliver(
             submission_information: {
-                add_id_info_uses_idfa: false
+                add_id_info_uses_idfa: false,
+                export_compliance_uses_encryption: false
             },
             reject_if_possible: true, # Rejects the previously submitted build if it's in a state where it's possible
             submit_for_review: true,
