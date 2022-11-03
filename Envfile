@@ -1,1 +1,0 @@
-variable :NOT_WORK_ON_CI, :boolean
