@@ -1,9 +1,9 @@
 # fastfile-ios
 
-- [Installation](Installation)
-- [Version](version)
-- [Release Guide](release-guide)
-- [Develop Guide](develop-guide)
+- [Installation](#Installation)
+- [Version](#version)
+- [Release Guide](#release-guide)
+- [Develop Guide](#develop-guide)
 
 ## Installation
 
