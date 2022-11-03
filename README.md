@@ -1,7 +1,7 @@
 # fastfile-ios
 
 - [Lane List](#lane-list)
-- [Version](#version)
+- [Version Midset](#version-midset)
 - [Installation](#installation)
 - [Release Guide](#release-guide)
 - [Develop Guide](#develop-guide)
@@ -11,7 +11,7 @@
 - build：給 CI 跑的，驗證專案在 CI Server 上也跑得起來。
 - unit_test：跑 unit test。
 
-### Version
+### Version Number
 - bump_build_number：build number 跳一號，會去檢查 TestFlight 跟 AppStore 上面的 build number，避免比上面的值還低。
 - bump_version：更新版號，可以決定要跳的是 major、minor 還是 patch，或事也可以設定 `version` 直接指定。
 
@@ -58,7 +58,7 @@
 - send_notification：發出 slack 通知，可以設定 title、message、inform_level、success。message 沒有一定要設定，如果兩個都有設定，title 就會加粗體。從原本的 fastfile 開放出來，如果有原本設計以外的需求就可以用。
 
 
-## Version
+## Version Midset
 
 The versions in this fastfile follow these mindset below.
 
