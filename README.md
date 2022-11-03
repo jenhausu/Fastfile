@@ -117,7 +117,7 @@ This Fastfile use `fastlane-plugin-changelog` to read and write changelog. First
 
 ### Archive for alpha/beta version
 
-1. add a new block in change log
+add a new block in change log
 
 ```
 ### [New Build]
@@ -134,10 +134,16 @@ add a new block in change log
 
 ## Develop Guide
 
-
 1. git clone these repo at the same level of your project.
 2. Change import action to these, then fastfile will improt from local.
  
 ```
 import "../../fastfile-ios/Fastfile"
 ```
+
+### 特殊套件解釋
+
+* tty-prompt：提供簡潔的 API 來讀取使用的輸入的值。
+* dotenv：用 .env 的方式讀取寫入 ENV。
+* envied：用來安全的讀取布林值，'0'/'1'、'f'/'t'、'false'/'true'、'off'/'on'、'no'/'yes' 都支援。
+* fastlane-plugin-versioning：更新版號的 plugin，原生的 action 會有問題。
