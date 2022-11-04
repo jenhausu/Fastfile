@@ -89,10 +89,12 @@ The versions in this fastfile follow these mindset below.
 
 ## Installation
 
+ruby 版本要設為 2.7.2，建議用 `rbenv`。
+
 1. Add these line at the first of your `Fastfile`.
 
 ```
-import_from_git(url: 'git@github.com:OsenseTech/fastfile-ios.git', path: 'Fastfile')
+import_from_git(url: 'git@github.com:[ORGANIZATION_NAME]/fastfile-ios.git', path: 'Fastfile')
 ```
 
 2. add these gems in your `Gemfile`, and then run `bundle install`
